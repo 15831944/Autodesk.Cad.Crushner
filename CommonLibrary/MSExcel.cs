@@ -644,7 +644,7 @@ namespace Autodesk.Cad.Crushner.Common
         private static void extractDataWorksheet(ExcelWorksheet ews, GemBox.Spreadsheet.CellRange range, FORMAT format)
         {
             // создать структуру таблицы - добавить поля в таблицу, при необходимости создать таблицу
-            createDataTableWorksheet(ews.Name, range);
+            createDataTableWorksheet(ews.Name, range, format);
 
             ews.ExtractDataEvent += new ExcelWorksheet.ExtractDataEventHandler((sender, e) => {
                 e.DataTableValue = e.ExcelValue == null ? null : e.ExcelValue.ToString();

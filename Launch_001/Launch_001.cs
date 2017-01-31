@@ -128,18 +128,14 @@ namespace Autodesk.Cad.Crushner.Launch_001
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
 
-            int cntEntity = Collection.GetCount(typeof(Circle));
             BlockTableRecord btrCurrSpace;
-            Circle cNewCircle;
+            Circle cNewCircle = new Circle();
             ObjectId oidCircle;
-            Point3d ptCenter;
             Vector3d norm;
+            int cntEntity = Collection.GetCount(cNewCircle);
 
             using (Transaction trAdding = dbCurrent.TransactionManager.StartTransaction()) {
-                ptCenter = new Point3d(25, 25, 25);
-                //object cNewCircle = Convert.ChangeType(Activator.CreateInstance(typeEntity), typeEntity);
-                cNewCircle = new Circle();
-                cNewCircle.Center = ptCenter;
+                cNewCircle.Center = new Point3d(25, 25, 25);
                 cNewCircle.Radius = (50 * Scale) + ((5 * cntEntity) * Scale);
                 cNewCircle.ColorIndex = 5 + cntEntity;
                 switch (cntEntity % 3) {
@@ -158,7 +154,7 @@ namespace Autodesk.Cad.Crushner.Launch_001
                 btrCurrSpace = trAdding.GetObject(dbCurrent.CurrentSpaceId
                     , OpenMode.ForWrite) as BlockTableRecord;
 
-                Collection.Add(cNewCircle);
+                Collection.Add(new EntityParser.ProxyEntity (cNewCircle));
                 oidCircle = btrCurrSpace.AppendEntity(cNewCircle);
                 trAdding.AddNewlyCreatedDBObject(cNewCircle, true);
 
@@ -175,19 +171,15 @@ namespace Autodesk.Cad.Crushner.Launch_001
         private void arcAdd()
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
-
-            int cntEntity = Collection.GetCount(typeof(Arc));
+            
             BlockTableRecord btrCurrSpace;
-            Arc cNewArc;
-            Point3d ptCenter;
+            Arc cNewArc = new Arc();
             ObjectId oidArc;
             Vector3d norm;
+            int cntEntity = Collection.GetCount(cNewArc);
 
             using (Transaction trAdding = dbCurrent.TransactionManager.StartTransaction()) {
-                ptCenter = new Point3d(25, 25, 25);
-                //object cNewCircle = Convert.ChangeType(Activator.CreateInstance(typeEntity), typeEntity);
-                cNewArc = new Arc();
-                cNewArc.Center = ptCenter;
+                cNewArc.Center = new Point3d(25, 25, 25);
                 cNewArc.Radius = (50 * Scale) + ((5 * cntEntity) * Scale);
                 cNewArc.ColorIndex = 5 + cntEntity;
                 (cNewArc as Arc).StartAngle = 0.0F; (cNewArc as Arc).EndAngle = 1.57F;
@@ -207,7 +199,7 @@ namespace Autodesk.Cad.Crushner.Launch_001
                 btrCurrSpace = trAdding.GetObject(dbCurrent.CurrentSpaceId
                     , OpenMode.ForWrite) as BlockTableRecord;
 
-                Collection.Add(cNewArc);
+                Collection.Add(new EntityParser.ProxyEntity (cNewArc));
                 oidArc = btrCurrSpace.AppendEntity(cNewArc);
                 trAdding.AddNewlyCreatedDBObject(cNewArc, true);
 

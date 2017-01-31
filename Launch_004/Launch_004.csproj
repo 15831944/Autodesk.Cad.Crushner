@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}</ProjectGuid>
+    <ProjectGuid>{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autodesk.Cad.Crushner.Common</RootNamespace>
-    <AssemblyName>Autodesk.Cad.Crushner.Common</AssemblyName>
+    <RootNamespace>Autodesk.Cad.Crushner.Launch_004</RootNamespace>
+    <AssemblyName>Autodesk.Cad.Crushner.Launch_004</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,15 +42,9 @@
       <HintPath>C:\Program Files\Autodesk\AutoCAD 2013\acmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Autodesk.AutoCAD.Interop.Common">
-      <HintPath>C:\Program Files\Autodesk\AutoCAD 2013\Autodesk.AutoCAD.Interop.Common.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="GemBox.Spreadsheet">
-      <HintPath>..\..\ExternalDll\GemBox.Spreadsheet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,42 +52,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityKey.cs" />
-    <Compile Include="EntityParser.cs" />
-    <Compile Include="Launch_000.cs" />
-    <Compile Include="Logging.cs" />
-    <Compile Include="MSExcel.cs" />
-    <Compile Include="ProgramBase.cs" />
+    <Compile Include="Launch_004.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>5</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Excel">
-      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>7</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
+    <ProjectReference Include="..\CommonLibrary\Common.csproj">
+      <Project>{9cfb137b-0ee5-4a64-a125-0ef8ca2a7232}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="settings_004.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

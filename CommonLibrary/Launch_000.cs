@@ -12,6 +12,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 //using System.IO;
 using System.Reflection;
+using Autodesk.AutoCAD.Interop.Common;
 
 //using App = Autodesk.AutoCAD.ApplicationServices.Application;
 //using AppService = Autodesk.AutoCAD.ApplicationServices;
@@ -146,21 +147,31 @@ namespace Autodesk.Cad.Crushner.Common
 
                     // "пробегаем" по всем объектам в пространстве модели
                     foreach (ObjectId id in ms) {
-                        // приводим каждый из них к типу Entity
-                        Entity entity = (Entity)tr.GetObject(id, OpenMode.ForWrite);
+                        // приводим каждый из них к типу object
+                        object entity = (object)tr.GetObject(id, OpenMode.ForWrite);
 
-                        PropertyInfo propInfo = entity.GetType().GetProperty(@"Center");
-                        if ((!(propInfo == null))
-                            && (propInfo.CanRead == true)) {
-                            entity.TransformBy(Matrix3d.Scaling(Scale, (Point3d)propInfo.GetValue(entity, null)));
+                        //PropertyInfo propInfo = entity.GetType().GetProperty(@"Center");
+                        //if ((!(propInfo == null))
+                        //    && (propInfo.CanRead == true)) {
+                            (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).TransformBy(
+                                Matrix3d.Scaling(
+                                    Scale
+                                    , Point3d.Origin // (Point3d)propInfo.GetValue(entity, null)
+                                ));
 
                             // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
                             doc.Editor.WriteMessage(string.Format("\nСлой:{0}; тип:{1}; цвет: [{2},{3},{4}]\n",
-                                entity.Layer, entity.GetType().ToString(), entity.Color.Red.ToString(), entity.Color.Green.ToString(), entity.Color.Blue.ToString()));
-                        } else
-                            // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
-                            doc.Editor.WriteMessage(string.Format("\nСлой:{0}; тип:{1}; выполнение [LAUNCH-000-ZOOM] в настоящее время не поддерживается\n",
-                                entity.Layer, entity.GetType().ToString()));
+                                (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
+                                , entity.GetType().ToString()
+                                , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Red.ToString()
+                                , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Green.ToString()
+                                , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Blue.ToString())
+                            );
+                        //} else
+                        //    // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
+                        //    doc.Editor.WriteMessage(string.Format("\nСлой:{0}; тип:{1}; выполнение [LAUNCH-000-ZOOM] в настоящее время не поддерживается\n",
+                        //        (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
+                        //        , entity.GetType().ToString()));
                     }
 
                     tr.Commit();
@@ -239,14 +250,20 @@ namespace Autodesk.Cad.Crushner.Common
 
                 // "пробегаем" по всем объектам в пространстве модели
                 foreach (ObjectId id in ms) {
-                    // приводим каждый из них к типу Entity
-                    Entity entity = (Entity)tr.GetObject(id, OpenMode.ForWrite);
+                    // приводим каждый из них к типу object
+                    object entity = (object)tr.GetObject(id, OpenMode.ForWrite);
 
                     // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
-                    Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage(string.Format("\n!!!Для удаления - слой:{0}; тип:{1}; цвет: [{2},{3},{4}]\n",
-                        entity.Layer, entity.GetType().ToString(), entity.Color.Red.ToString(), entity.Color.Green.ToString(), entity.Color.Blue.ToString()));
+                    Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage(
+                        string.Format("\n!!!Для удаления - слой:{0}; тип:{1}; цвет: [{2},{3},{4}]\n",
+                            (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).GetType().ToString()
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Red.ToString()
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Green.ToString()
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Blue.ToString())
+                    );
 
-                    entity.Erase();
+                    (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null)?.Erase();
                 }
 
                 tr.Commit();
@@ -270,14 +287,20 @@ namespace Autodesk.Cad.Crushner.Common
 
                 // "пробегаем" по всем объектам в пространстве модели
                 foreach (ObjectId id in ms) {
-                    // приводим каждый из них к типу Entity
-                    Entity entity = (Entity)tr.GetObject(id, OpenMode.ForRead);
+                    // приводим каждый из них к типу object
+                    object entity = (object)tr.GetObject(id, OpenMode.ForRead);
 
                     MSExcel.AddToExport(entity);
 
                     // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
-                    doc.Editor.WriteMessage(string.Format("\nПодготовлен для экспорта: слой:{0}; тип:{1}; цвет: [{2},{3},{4}]\n",
-                        entity.Layer, entity.GetType().ToString(), entity.Color.Red.ToString(), entity.Color.Green.ToString(), entity.Color.Blue.ToString()));
+                    doc.Editor.WriteMessage(
+                        string.Format("\nПодготовлен для экспорта: слой:{0}; тип:{1}; цвет: [{2},{3},{4}]\n",
+                            (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).GetType().ToString()
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Red.ToString()
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Green.ToString()
+                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Blue.ToString())
+                    );
                 }
 
                 tr.Commit();
@@ -296,20 +319,44 @@ namespace Autodesk.Cad.Crushner.Common
             BlockTableRecord btrCurrSpace;
             ObjectId oidEntity;
 
-            using (Transaction trAdding = dbCurrent.TransactionManager.StartTransaction())
-            {
-                btrCurrSpace = trAdding.GetObject(dbCurrent.CurrentSpaceId
-                    , OpenMode.ForWrite) as BlockTableRecord;
+            Entity entityTransformCopy;
 
-                oidEntity = btrCurrSpace.AppendEntity(MSExcel.s_dictEntity[key]);
-                trAdding.AddNewlyCreatedDBObject(MSExcel.s_dictEntity[key], true);
+            string message = string.Format(@"Добавление примитива {0}, имя={1}..."
+                , MSExcel.s_dictEntity[key].GetType().Name
+                , key.Name);
 
-                trAdding.Commit();
+            try {
+                using (Transaction trAdding = dbCurrent.TransactionManager.StartTransaction())
+                {
+                    btrCurrSpace = trAdding.GetObject(dbCurrent.CurrentSpaceId
+                        , OpenMode.ForWrite) as BlockTableRecord;
+
+                    oidEntity = btrCurrSpace.AppendEntity(MSExcel.s_dictEntity[key].m_entity);
+                    trAdding.AddNewlyCreatedDBObject(MSExcel.s_dictEntity[key].m_entity as DBObject, true);
+
+                    //if (MSExcel.s_dictEntity[key].m_entity is Solid3d)
+                    //    acdictExt = ((Acad3DSolid)MSExcel.s_dictEntity[key].m_entity.AcadObject).GetExtensionDictionary();
+                    //else
+                    //    ;
+
+                    if (!(MSExcel.s_dictEntity[key].m_ptDisplacement == Point3d.Origin))
+                        MSExcel.s_dictEntity[key].m_entity.TransformBy(Matrix3d.Displacement(MSExcel.s_dictEntity[key].m_ptDisplacement - Point3d.Origin));
+                    else
+                        ;
+
+                    MSExcel.s_dictEntity[key].m_entity.TransformBy(Matrix3d.Rotation(1.57F, new Vector3d(0, 1, 0), Point3d.Origin));
+
+                    entityTransformCopy = MSExcel.s_dictEntity[key].m_entity.GetTransformedCopy(Matrix3d.PlaneToWorld(new Vector3d(0, 0, 1)));
+
+                    trAdding.Commit();
+                }
+
+                Logging.AcEditorWriteMessage(message);
+            } catch (System.Exception e) {
+                Logging.AcEditorWriteException(e, message);
+
+                Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
             }
-
-            DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
-            Document acDoc = acDocMgr.GetDocument(dbCurrent);
-            acDoc.Editor.WriteMessage(string.Format(@"{0}Добавлен примитив {1}...", Environment.NewLine, MSExcel.s_dictEntity[key].GetType().Name));
         }
 
         protected void flash()

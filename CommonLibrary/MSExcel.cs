@@ -13,163 +13,25 @@ using System.IO;
 
 using excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using Autodesk.AutoCAD.Interop.Common;
 
 namespace Autodesk.Cad.Crushner.Common
 {
-    /// <summary>
-    /// Перечисление - типы примитивов
-    /// </summary>
-    public enum COMMAND_ENTITY : short
-    {
-        UNKNOWN = -1
-        , CIRCLE, ARC, LINE
-            , COUNT
-    }
-    /// <summary>
-    /// Уникалбный идентификатор примитива на чертеже
-    /// </summary>
-    public struct KEY_ENTITY
-    {
-        private static Char s_chNameDelimeter = '-';
-
-        public COMMAND_ENTITY m_command;
-
-        public int m_index;
-        /// <summary>
-        /// Уникальное наименование со специальной сигнатурой (состоит из 2-х частей)
-        ///  1 - COMMAND_ENTITY
-        ///  2 - 3-х значный цифровой индекс
-        /// </summary>
-        public string Name {
-            get {
-                if (!(m_command == COMMAND_ENTITY.UNKNOWN))
-                    if (!(m_index < 0))
-                        return string.Format(@"{0}{2}{1:000}", m_command.ToString(), m_index, s_chNameDelimeter);
-                    else
-                        return string.Format(@"{0}", m_command.ToString());
-                else
-                    return string.Empty;
-            }
-        }
-        /// <summary>
-        /// Тип объекта
-        /// </summary>
-        public Type m_type;
-
-        public KEY_ENTITY(string name)
-        {
-            string[] names = name.Split(s_chNameDelimeter);
-
-            if ((Enum.TryParse(names[0], out m_command) == true)
-                && (Int32.TryParse(names[1], out m_index) == true))
-                m_type = MSExcel.GetTypeEntity(m_command);
-            else {
-                m_command = COMMAND_ENTITY.UNKNOWN;
-                m_index = -1;
-                m_type = Type.Missing as Type;
-            }
-        }
-
-        public KEY_ENTITY(Type type, COMMAND_ENTITY command, int indx)
-        {
-            m_type = type;
-
-            m_command = command;
-
-            m_index = indx;
-        }
-
-        public static bool operator==(KEY_ENTITY o1, KEY_ENTITY o2)
-        {
-            return (o1.m_command.Equals(o2.m_command) == true)
-                && (o1.m_index.Equals(o2.m_index) == true)
-                && (o1.m_type.Equals(o2.m_type) == true);
-        }
-
-        public static bool operator !=(KEY_ENTITY o1, KEY_ENTITY o2)
-        {
-            return (o1.m_command.Equals(o2.m_command) == false)
-                || (o1.m_index.Equals(o2.m_index) == false)
-                || (o1.m_type.Equals(o2.m_type) == false);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (KEY_ENTITY)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-    }
-
-    public class Collection
-    {
-        protected static readonly List<KEY_ENTITY> s_MappingKeyEntity = new List<KEY_ENTITY>() {
-            new KEY_ENTITY () { m_command = COMMAND_ENTITY.CIRCLE, m_index = -1, m_type = typeof(Circle) }
-            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.ARC, m_index = -1, m_type = typeof(Arc) }
-            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.LINE, m_index = -1, m_type = typeof(Line) }
-            ,
-        };
-
-        public static Type GetTypeEntity(COMMAND_ENTITY command)
-        {
-            Type typeRes = Type.Missing as Type;
-
-            KEY_ENTITY keyEntity = 
-                s_MappingKeyEntity.Find(item => { return item.m_command == command; });
-
-            if (!(keyEntity == null))
-                typeRes = keyEntity.m_type;
-            else
-                ;
-
-            return typeRes;
-        }
-
-        public static Dictionary<KEY_ENTITY, Entity> s_dictEntity = new Dictionary<KEY_ENTITY, Entity>();
-
-        public static void Clear()
-        {
-            s_dictEntity.Clear();
-        }
-
-        public static void Add(Entity entity)
-        {
-            s_dictEntity.Add(GetKeyEntity(entity.GetType()), entity);
-        }
-
-        public static void Add(string name, Entity entity)
-        {
-            s_dictEntity.Add(new KEY_ENTITY(name), entity);
-        }
-
-        public static KEY_ENTITY GetKeyEntity(Type typeEntity)
-        {
-            return new KEY_ENTITY(typeEntity
-                , s_MappingKeyEntity.Find(type => type.m_type == typeEntity).m_command
-                , GetCount(typeEntity));
-        }
-
-        public static int GetCount(Type typeEntity)
-        {
-            int iRes = 0;
-
-            iRes = s_dictEntity.Keys.Where(type => type.m_type == typeEntity).Count();
-
-            return iRes;
-        }
-    }
-
     public class MSExcel : Collection
     {
+        /// <summary>
+        /// Известные форматы книги MS Excel
+        /// </summary>
         public enum FORMAT : short { UNKNOWN = -1, ORDER, HEAP }
         /// <summary>
         /// Наименование книги MS Excel со списком объектов по умолчанию
         /// </summary>
         private static string s_nameSettings = @"settings.xls";
-
+        /// <summary>
+        /// Возвратить полное путь с именем файла (книги MS Excel) конфигурации
+        /// </summary>
+        /// <param name="strNameSettingsExcelFile"></param>
+        /// <returns></returns>
         private static string getFullNameSettingsExcelFile(string strNameSettingsExcelFile = @"")
         {
             return string.Format(@"{0}\{1}"
@@ -179,8 +41,46 @@ namespace Autodesk.Cad.Crushner.Common
                     strNameSettingsExcelFile :
                         s_nameSettings);
         }
-
+        /// <summary>
+        /// Словарь имя_листа::таблица - содержимое книги MS Excel
+        /// </summary>
         private static Dictionary<string, System.Data.DataTable> _dictDataTableOfExcelWorksheet;
+        /// <summary>
+        /// Структура для хранения методов распаковки и упаковки примитива из/в строки(у) таблицы
+        /// </summary>
+        private struct METHODE_ENTITY
+        {
+            public delegateNewEntity newEntity;
+
+            public delegateEntityToDataRow entityToDataRow;
+        }
+        /// <summary>
+        /// Тип делегата для создания примитива
+        /// </summary>
+        /// <param name="rEntity">Строка талицы со значениями для создания примитива</param>
+        /// <param name="format">Формат книги MS Excel</param>
+        /// <returns>Созданный объект примитива</returns>
+        private delegate EntityParser.ProxyEntity delegateNewEntity(DataRow rEntity, FORMAT format);
+        /// <summary>
+        /// Тип делегата для упаковки примитива в строку таблицы
+        ///  (подготовка к экспорту)
+        /// </summary>
+        /// <param name="pair">Сложный ключ - идентификатор примитива + объект примитива</param>
+        /// <param name="format">Формат книги MS Excel</param>
+        /// <returns></returns>
+        private delegate object[] delegateEntityToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, FORMAT format);
+        /// <summary>
+        /// Словарь с методами для создания/упаковки прмитивов разных типов
+        ///  ключ - тип примитива
+        /// </summary>
+        private static Dictionary<COMMAND_ENTITY, METHODE_ENTITY> dictDelegateMethodeEntity = new Dictionary<COMMAND_ENTITY, METHODE_ENTITY>() {
+            { COMMAND_ENTITY.CIRCLE, new METHODE_ENTITY () { newEntity = EntityParser.newCircle, entityToDataRow = EntityParser.circleToDataRow } }
+            , { COMMAND_ENTITY.ARC, new METHODE_ENTITY () { newEntity = EntityParser.newArc, entityToDataRow = EntityParser.arcToDataRow } }
+            , { COMMAND_ENTITY.LINE, new METHODE_ENTITY () { newEntity = EntityParser.newLine, entityToDataRow = EntityParser.lineToDataRow } }
+            , { COMMAND_ENTITY.PLINE3, new METHODE_ENTITY () { newEntity = EntityParser.newPolyLine3d, entityToDataRow = EntityParser.polyLine3dToDataRow } }
+            , { COMMAND_ENTITY.CONE, new METHODE_ENTITY () { newEntity = EntityParser.newCone, entityToDataRow = EntityParser.coneToDataRow } }
+            , { COMMAND_ENTITY.BOX, new METHODE_ENTITY () { newEntity = EntityParser.newBox, entityToDataRow = EntityParser.boxToDataRow } }
+        };
         /// <summary>
         /// Создать таблицу для проецирования значений с листа книги MS Excel
         ///  , где наименования полей таблицы содержатся в 0-ой строке листа книги MS Excel
@@ -258,12 +158,17 @@ namespace Autodesk.Cad.Crushner.Common
 
             return iErr;
         }
-
+        /// <summary>
+        /// Импортировать список объектов
+        /// </summary>
+        /// <param name="ef">Объект книги MS Excel</param>
+        /// <param name="format">Формат книги MS Excel</param>
+        /// <returns>Признак результата выполнения метода</returns>
         private static int import(ExcelFile ef, FORMAT format)
         {
             int iRes = 0;
 
-            Entity entity = null;
+            EntityParser.ProxyEntity? pEntity;
             COMMAND_ENTITY commandEntity = COMMAND_ENTITY.UNKNOWN;
             string nameEntity = string.Empty;
 
@@ -277,18 +182,18 @@ namespace Autodesk.Cad.Crushner.Common
 
                     foreach (DataRow rEntity in _dictDataTableOfExcelWorksheet[ews.Name].Rows) {
                         if (dictDelegateTryParseCommandAndNameEntity[format](ews, rEntity, out commandEntity, out nameEntity) == true) {
-                            entity = null;
+                            pEntity = null;
 
                             // соэдать примитив 
                             if (dictDelegateMethodeEntity.ContainsKey(commandEntity) == true)
-                                entity = dictDelegateMethodeEntity[commandEntity].newEntity(rEntity, format);
+                                pEntity = dictDelegateMethodeEntity[commandEntity].newEntity(rEntity, format);
                             else
                                 ;
 
-                            if (!(entity == null))
+                            if (!(pEntity == null))
                                 Add(
                                     nameEntity
-                                    , entity
+                                    , pEntity.GetValueOrDefault()
                                 );
                             else
                                 Logging.AcEditorWriteMessage(string.Format(@"Элемент с именем {0} пропущен..."
@@ -385,260 +290,9 @@ namespace Autodesk.Cad.Crushner.Common
             return bRes;
         }
 
-        private struct METHODE_ENTITY
+        internal static void AddToExport(object entity)
         {
-            public delegateNewEntity newEntity;
-
-            public delegateEntityToDataRow entityToDataRow;
-        }
-
-        private delegate Entity delegateNewEntity (DataRow rEntity, FORMAT format);
-
-        private delegate object[] delegateEntityToDataRow(KeyValuePair<KEY_ENTITY, Entity> pair, FORMAT format);
-
-        private static Dictionary<COMMAND_ENTITY, METHODE_ENTITY> dictDelegateMethodeEntity = new Dictionary<COMMAND_ENTITY, METHODE_ENTITY>() {
-            { COMMAND_ENTITY.CIRCLE, new METHODE_ENTITY () { newEntity = newCircle, entityToDataRow = circleToDataRow } }
-            , { COMMAND_ENTITY.ARC, new METHODE_ENTITY () { newEntity = newArc, entityToDataRow = arcToDataRow } }
-            , { COMMAND_ENTITY.LINE, new METHODE_ENTITY () { newEntity = newLine, entityToDataRow = lineToDataRow } }
-        };
-        /// <summary>
-        /// Перечисление - индексы столбцов на листе книги MS Excel в формате 'HEAP'
-        /// </summary>
-        private enum HEAP_INDEX_COLUMN {
-            CIRCLE_CENTER_X = 2, CIRCLE_CENTER_Y, CIRCLE_CENTER_Z, CIRCLE_RADIUS, CIRCLE_COLORINDEX, CIRCLE_TICKNESS
-            , ARC_CENTER_X = 2, ARC_CENTER_Y, ARC_CENTER_Z, ARC_RADIUS, ARC_COLORINDEX, ARC_TICKNESS, ARC_ANGLE_START, ARC_ANGLE_END
-            , LINE_START_X = 2, LINE_START_Y, LINE_START_Z, LINE_END_X, LINE_END_Y, LINE_END_Z, LINE_COLORINDEX, LINE_TICKNESS
-        }
-        /// <summary>
-        /// Создать новый примитив - окружность по значениям параметров из строки таблицы
-        /// </summary>
-        /// <param name="rEntity">Строка таблицы</param>
-        /// <param name="format">Фориат файла конфигурации из которого была импортирована таблица</param>
-        /// <returns>Объект примитива - окружность</returns>
-        private static Entity newCircle(DataRow rEntity, FORMAT format)
-        {
-            Entity entityRes = null;
-            // соэдать примитив 
-            entityRes = new Circle();
-            // значения для параметров примитива
-            switch (format) {
-                case FORMAT.HEAP:
-                    (entityRes as Circle).Center = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_CENTER_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_CENTER_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_CENTER_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Circle).Radius = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_RADIUS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Circle).ColorIndex = int.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_COLORINDEX].ToString());
-                    (entityRes as Circle).Thickness = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                case FORMAT.ORDER:
-                    (entityRes as Circle).Center = new Point3d(
-                        double.Parse(rEntity[@"CENTER.X"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"CENTER.Y"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"CENTER.Z"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Circle).Radius = double.Parse(rEntity[@"Radius"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Circle).ColorIndex = int.Parse(rEntity[@"ColorIndex"].ToString());
-                    (entityRes as Circle).Thickness = double.Parse(rEntity[@"TICKNESS"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                default:
-                    break;
-            }
-
-            return entityRes;
-        }
-        /// <summary>
-        /// Создать новый примитив - дугу по значениям параметров из строки таблицы
-        /// </summary>
-        /// <param name="rEntity">Строка таблицы</param>
-        /// <param name="format">Фориат файла конфигурации из которого была импортирована таблица</param>
-        /// <returns>Объект примитива - дуга</returns>
-        private static Entity newArc(DataRow rEntity, FORMAT format)
-        {
-            Entity entityRes = null;
-            // соэдать примитив 
-            entityRes = new Arc();
-            // значения для параметров примитива
-            switch (format) {
-                case FORMAT.HEAP:
-                    (entityRes as Arc).Center = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_CENTER_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_CENTER_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_CENTER_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Arc).Radius = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_RADIUS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Arc).ColorIndex = int.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_COLORINDEX].ToString());
-                    (entityRes as Arc).Thickness = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Arc).StartAngle = (Math.PI / 180) * float.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_ANGLE_START].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Arc).EndAngle = (Math.PI / 180) * float.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_ANGLE_END].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                case FORMAT.ORDER:
-                    (entityRes as Arc).Center = new Point3d(
-                        double.Parse(rEntity[@"CENTER.X"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"CENTER.Y"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"CENTER.Z"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Arc).Radius = double.Parse(rEntity[@"Radius"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Arc).ColorIndex = int.Parse(rEntity[@"ColorIndex"].ToString());
-                    (entityRes as Arc).Thickness = double.Parse(rEntity[@"TICKNESS"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Arc).StartAngle = (Math.PI / 180) * float.Parse(rEntity[@"ANGLE.START"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (entityRes as Arc).EndAngle = (Math.PI / 180) * float.Parse(rEntity[@"ANGLE.END"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                default:
-                    break;
-            }
-
-            return entityRes;
-        }
-        /// <summary>
-        /// Создать новый примитив - линия по значениям параметров из строки таблицы
-        /// </summary>
-        /// <param name="rEntity">Строка таблицы</param>
-        /// <param name="format">Фориат файла конфигурации из которого была импортирована таблица</param>
-        /// <returns>Объект примитива - линия</returns>
-        private static Entity newLine(DataRow rEntity, FORMAT format)
-        {
-            Entity entityRes = null;
-            // соэдать примитив 
-            entityRes = new Line();
-            // значения для параметров примитива
-            switch (format) {
-                case FORMAT.HEAP:
-                    (entityRes as Line).StartPoint = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_START_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_START_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_START_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Line).EndPoint = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_END_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_END_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_END_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Line).ColorIndex = int.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_COLORINDEX].ToString());
-                    (entityRes as Line).Thickness = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                case FORMAT.ORDER:
-                    (entityRes as Line).StartPoint = new Point3d(
-                        double.Parse(rEntity[@"START.X"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"START.Y"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"START.Z"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Line).EndPoint = new Point3d(
-                        double.Parse(rEntity[@"END.X"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"END.Y"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"END.Z"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (entityRes as Line).ColorIndex = int.Parse(rEntity[@"ColorIndex"].ToString());
-                    (entityRes as Line).Thickness = double.Parse(rEntity[@"TICKNESS"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                default:
-                    break;
-            }
-
-            return entityRes;
-        }
-
-        private static object[] circleToDataRow(KeyValuePair<KEY_ENTITY, Entity> pair, FORMAT format)
-        {
-            object[] rowRes = null;
-
-            switch (format) {
-                case FORMAT.HEAP:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
-                        , string.Format(@"{0:0.0}", (pair.Value as Circle).Center.X) //CENTER.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Circle).Center.Y) //CENTER.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Circle).Center.Z) //CENTER.Z
-                        , string.Format(@"{0:0}", (pair.Value as Circle).Radius) //Radius
-                        , string.Format(@"{0}", (pair.Value as Circle).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value as Circle).Thickness) //Tickness
-                    };
-                    break;
-                case FORMAT.ORDER:
-                default:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0:0.0}", (pair.Value as Circle).Center.X) //CENTER.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Circle).Center.Y) //CENTER.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Circle).Center.Z) //CENTER.Z
-                        , string.Format(@"{0:0}", (pair.Value as Circle).Radius) //Radius
-                        , string.Format(@"{0}", (pair.Value as Circle).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value as Circle).Thickness) //Tickness
-                    };
-                    break;
-            }
-
-            return rowRes;
-        }
-
-        private static object[] arcToDataRow(KeyValuePair<KEY_ENTITY, Entity> pair, FORMAT format)
-        {
-            object[] rowRes = null;
-
-            switch (format) {
-                case FORMAT.HEAP:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
-                        , string.Format(@"{0:0.0}", (pair.Value as Arc).Center.X) //CENTER.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Arc).Center.Y) //CENTER.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Arc).Center.Z) //CENTER.Z
-                        , string.Format(@"{0:0}", (pair.Value as Arc).Radius) //Radius
-                        , string.Format(@"{0}", (pair.Value as Arc).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value as Arc).Thickness) //Tickness
-                        , string.Format(@"{0:0}", (180 / Math.PI) * (pair.Value as Arc).StartAngle) //START.ANGLE
-                        , string.Format(@"{0:0}", (180 / Math.PI) * (pair.Value as Arc).EndAngle) //END.ANGLE
-                    };
-                    break;
-                case FORMAT.ORDER:
-                default:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0:0.0}", (pair.Value as Arc).Center.X) //CENTER.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Arc).Center.Y) //CENTER.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Arc).Center.Z) //CENTER.Z
-                        , string.Format(@"{0:0}", (pair.Value as Arc).Radius) //Radius
-                        , string.Format(@"{0}", (pair.Value as Arc).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value as Arc).Thickness) //Tickness
-                        , string.Format(@"{0:0}", (180 / Math.PI) * (pair.Value as Arc).StartAngle) //START.ANGLE
-                        , string.Format(@"{0:0}", (180 / Math.PI) * (pair.Value as Arc).EndAngle) //END.ANGLE
-                    };
-                    break;
-            }
-
-            return rowRes;
-        }
-
-        private static object[] lineToDataRow(KeyValuePair<KEY_ENTITY, Entity> pair, FORMAT format)
-        {
-            object[] rowRes = null;
-
-            switch (format) {
-                case FORMAT.HEAP:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).StartPoint.X) //SATRT.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).StartPoint.Y) //START.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).StartPoint.Z) //START.Z
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).EndPoint.X) //END.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).EndPoint.Y) //END.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).EndPoint.Z) //END.Z
-                        , string.Format(@"{0}", (pair.Value as Line).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value as Line).Thickness) //Tickness
-                    };
-                    break;
-                case FORMAT.ORDER:
-                default:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).StartPoint.X) //SATRT.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).StartPoint.Y) //START.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).StartPoint.Z) //START.Z
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).EndPoint.X) //END.X
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).EndPoint.Y) //END.Y
-                        , string.Format(@"{0:0.0}", (pair.Value as Line).EndPoint.Z) //END.Z
-                        , string.Format(@"{0}", (pair.Value as Line).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value as Line).Thickness) //Tickness
-                    };
-                    break;
-            }
-
-            return rowRes;
+            throw new NotImplementedException();
         }
 
         private static void extractDataWorksheet(ExcelWorksheet ews, GemBox.Spreadsheet.CellRange range, FORMAT format)
@@ -696,9 +350,17 @@ namespace Autodesk.Cad.Crushner.Common
             //    }
             //}
         }
-
+        /// <summary>
+        /// Идентификаторы результата проверки значения в ячейке
+        /// </summary>
         private enum VALIDATE_CELL_RESULT : short { BREAK = -2, CONTINUE, NEW_ROW, VALUE }
-
+        /// <summary>
+        /// Проверить значение в ячейке
+        /// </summary>
+        /// <param name="range">Диапазон столбцов/строк</param>
+        /// <param name="iRow">Номер строки</param>
+        /// <param name="iColumn">Номер столбца</param>
+        /// <returns>Результат проверки</returns>
         private static VALIDATE_CELL_RESULT validateCell(GemBox.Spreadsheet.CellRange range, int iRow, int iColumn)
         {
             VALIDATE_CELL_RESULT iRes = VALIDATE_CELL_RESULT.BREAK;
@@ -735,8 +397,11 @@ namespace Autodesk.Cad.Crushner.Common
 
             return iRes;
         }
-
-        private static void closeWorkbook(string strFullNameSettings)
+        /// <summary>
+        /// Закрыть книгу MS Excel
+        /// </summary>
+        /// <param name="strFullName">Полный путь + наименование для закрываемой книги</param>
+        private static void closeWorkbook(string strFullName)
         {
             bool bInstanceAppExcel = true;
             Microsoft.Office.Interop.Excel.Application appExcel = null;
@@ -752,7 +417,7 @@ namespace Autodesk.Cad.Crushner.Common
                 ;
 
             foreach (Microsoft.Office.Interop.Excel.Workbook workbook in appExcel.Workbooks)
-                if (workbook.FullName.Equals(strFullNameSettings, StringComparison.InvariantCultureIgnoreCase) == true) {
+                if (workbook.FullName.Equals(strFullName, StringComparison.InvariantCultureIgnoreCase) == true) {
                     workbook.Saved = true;
                     workbook.Close(Microsoft.Office.Interop.Excel.XlSaveAction.xlDoNotSaveChanges);
 
@@ -760,7 +425,11 @@ namespace Autodesk.Cad.Crushner.Common
                 } else
                     ;
         }
-
+        /// <summary>
+        /// Очитсить содержимое книги MS Excel
+        /// </summary>
+        /// <param name="strNameSettingsExcelFile">Полный путь + наименование для очищаемой книги (файла конфигурации)</param>
+        /// <param name="format">Формат книги MS Excel</param>
         private static void clearWorkbook(string strNameSettingsExcelFile = @"", FORMAT format = FORMAT.ORDER)
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
@@ -807,7 +476,11 @@ namespace Autodesk.Cad.Crushner.Common
                 acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
         }
-
+        /// <summary>
+        /// Сохранить внесенные изменения в книге MS Excel
+        /// </summary>
+        /// <param name="strNameSettingsExcelFile">Полный путь + наименование для сохраняемой книги (файла конфигурации)</param>
+        /// <param name="format">Формат книги MS Excel</param>
         private static void saveWorkbook(string strNameSettingsExcelFile = @"", FORMAT format = FORMAT.ORDER)
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
@@ -856,20 +529,31 @@ namespace Autodesk.Cad.Crushner.Common
                 acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
         }
-
+        /// <summary>
+        /// Список примитивов, подготовленный для экспорта (что есть на чертеже)
+        ///  , для сравнения с импортированным ранее; в случае разницы добавлять/удалять примитивы
+        /// </summary>
         private static List<KEY_ENTITY> _listKeyEntityToExport = null;
-
-        public static void AddToExport(Entity entity)
+        /// <summary>
+        /// Добавить примитив в список, подготовленный для экспорта (что есть на чертеже)
+        /// </summary>
+        /// <param name="pEntity">Примитив для добавления</param>
+        public static void AddToExport(EntityParser.ProxyEntity pEntity)
         {
             if (_listKeyEntityToExport == null)
                 _listKeyEntityToExport = new List<KEY_ENTITY>();
             else
                 ;
 
-            if (s_dictEntity.Values.Contains(entity) == false)
-                s_dictEntity.Add(GetKeyEntity(entity.GetType()), entity);
+            if (s_dictEntity.Values.Contains(pEntity) == false)
+                s_dictEntity.Add(GetKeyEntity(
+                        pEntity
+                        , pEntity is Solid3d ? (pEntity.m_entity as Acad3DSolid).SolidType : string.Empty
+                    )
+                    , pEntity
+                );
             else
-                _listKeyEntityToExport.Add(s_dictEntity.FirstOrDefault(x => x.Value.ObjectId == entity.ObjectId).Key);
+                _listKeyEntityToExport.Add(s_dictEntity.FirstOrDefault(x => (x.Value.m_entity as DBObject).ObjectId == (pEntity.m_entity as DBObject).ObjectId).Key);
         }
         /// <summary>
         /// Экспортировать список объектов в книгу MS Excel
@@ -929,7 +613,7 @@ namespace Autodesk.Cad.Crushner.Common
                         break;
                 }
 
-                foreach (KeyValuePair<KEY_ENTITY, Entity> pair in s_dictEntity) {
+                foreach (KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair in s_dictEntity) {
                     switch (format) {
                         case FORMAT.HEAP:
                             // 'nameWorksheet' определено ранее (не зависит от типа примитива)

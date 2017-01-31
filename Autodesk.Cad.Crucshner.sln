@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{3D
 		Document\Instruction-2016-01-14.docx = Document\Instruction-2016-01-14.docx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launch_004", "Launch_004\Launch_004.csproj", "{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,14 @@ Global
 		{063FB8E6-2974-40A3-8F2A-AEB239105BED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{063FB8E6-2974-40A3-8F2A-AEB239105BED}.Release|x64.ActiveCfg = Release|Any CPU
 		{063FB8E6-2974-40A3-8F2A-AEB239105BED}.Release|x64.Build.0 = Release|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Debug|x64.Build.0 = Debug|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DEAF7B5-13F8-41F3-A43A-81AC6BFDB6BB}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

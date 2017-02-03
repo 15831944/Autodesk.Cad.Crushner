@@ -46,7 +46,8 @@
       <HintPath>C:\Program Files\Autodesk\AutoCAD 2013\Autodesk.AutoCAD.Interop.Common.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="GemBox.Spreadsheet">
+    <Reference Include="GemBox.Spreadsheet, Version=41.3.30.1047, Culture=neutral, PublicKeyToken=b1b72c69714d4847, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ExternalDll\GemBox.Spreadsheet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -58,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Block.cs" />
     <Compile Include="EntityKey.cs" />
     <Compile Include="EntityParser.cs" />
     <Compile Include="Launch_000.cs" />

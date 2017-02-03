@@ -17,7 +17,7 @@ using Autodesk.AutoCAD.Interop.Common;
 
 namespace Autodesk.Cad.Crushner.Common
 {
-    public class MSExcel : Collection
+    public partial class MSExcel : Collection
     {
         /// <summary>
         /// Известные форматы книги MS Excel
@@ -59,8 +59,9 @@ namespace Autodesk.Cad.Crushner.Common
         /// </summary>
         /// <param name="rEntity">Строка талицы со значениями для создания примитива</param>
         /// <param name="format">Формат книги MS Excel</param>
+        /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Созданный объект примитива</returns>
-        private delegate EntityParser.ProxyEntity delegateNewEntity(DataRow rEntity, FORMAT format);
+        private delegate EntityParser.ProxyEntity delegateNewEntity(DataRow rEntity, FORMAT format/*, string blockName*/);
         /// <summary>
         /// Тип делегата для упаковки примитива в строку таблицы
         ///  (подготовка к экспорту)
@@ -141,6 +142,8 @@ namespace Autodesk.Cad.Crushner.Common
 
             _dictDataTableOfExcelWorksheet = new Dictionary<string, System.Data.DataTable>();
 
+            //GemBox.Spreadsheet.SpreadsheetInfo.SetLicense(@"FREE-LIMITED-KEY");
+
             try {
                 ExcelFile ef = new ExcelFile();
                 ef.LoadXls(strNameSettings, XlsOptions.None);
@@ -158,6 +161,36 @@ namespace Autodesk.Cad.Crushner.Common
 
             return iErr;
         }
+
+        private static string WSHHEET_NAME_CONFIG = @"_CONFIG";
+
+        private static string WSHHEET_NAME_BLOCK_REFERENCE = @"_BLOCK_REFERENCE";
+
+        private static GemBox.Spreadsheet.CellRange getUsedCellRange(ExcelWorksheet ews, FORMAT format)
+        {
+            GemBox.Spreadsheet.CellRange rangeRes = null;
+
+            int iRow = -1
+                , iColumn = -1;
+
+            // только для 'FORMAT.HEAP'
+            iRow = 0;
+            iColumn = 0;
+            while (!(ews.Rows[iRow].Cells[0].Value == null)) {
+                while (!(ews.Rows[iRow].Cells[iColumn].Value == null))
+                    iColumn++;
+
+                iRow++;
+            }
+
+            if ((iRow > 0)
+                && (iColumn > 0))
+                rangeRes = ews.Cells.GetSubrangeAbsolute(0, 0, iRow - 1, iColumn - 1);
+            else
+                ;
+
+            return rangeRes;
+        }
         /// <summary>
         /// Импортировать список объектов
         /// </summary>
@@ -168,50 +201,68 @@ namespace Autodesk.Cad.Crushner.Common
         {
             int iRes = 0;
 
+            GemBox.Spreadsheet.CellRange range;
             EntityParser.ProxyEntity? pEntity;
             COMMAND_ENTITY commandEntity = COMMAND_ENTITY.UNKNOWN;
             string nameEntity = string.Empty;
 
             foreach (ExcelWorksheet ews in ef.Worksheets) {
-                GemBox.Spreadsheet.CellRange range = ews.GetUsedCellRange();
+                if (ews.Name.Equals(WSHHEET_NAME_CONFIG) == false) {
+                    range =
+                        ews.GetUsedCellRange()
+                        //getUsedCellRange(ews, format)
+                        ;
 
-                Logging.AcEditorWriteMessage(string.Format(@"Обработка листа с имененм = {0}", ews.Name));
+                    Logging.AcEditorWriteMessage(string.Format(@"Обработка листа с имененм = {0}", ews.Name));
 
-                if (range.LastRowIndex > 0) {
-                    extractDataWorksheet(ews, range, format);
+                    if ((!(range == null))
+                        && ((range.LastRowIndex + 1)  > 0)) {
+                        extractDataWorksheet(ews, range, format);
 
-                    foreach (DataRow rEntity in _dictDataTableOfExcelWorksheet[ews.Name].Rows) {
-                        if (dictDelegateTryParseCommandAndNameEntity[format](ews, rEntity, out commandEntity, out nameEntity) == true) {
-                            pEntity = null;
+                        switch (ef.Worksheets.Cast<ExcelWorksheet>().ToList().IndexOf(ews)) {
+                            case 0: // BLOCK
+                                foreach (DataRow rReferenceBlock in _dictDataTableOfExcelWorksheet[ews.Name].Rows)
+                                    s_dictBlock.AddReference(rReferenceBlock);
+                                break;
+                            default:
+                                foreach (DataRow rEntity in _dictDataTableOfExcelWorksheet[ews.Name].Rows) {
+                                    if (dictDelegateTryParseCommandAndNameEntity[format](ews, rEntity, out commandEntity, out nameEntity) == true) {
+                                        pEntity = null;
 
-                            // соэдать примитив 
-                            if (dictDelegateMethodeEntity.ContainsKey(commandEntity) == true)
-                                pEntity = dictDelegateMethodeEntity[commandEntity].newEntity(rEntity, format);
-                            else
-                                ;
+                                        // соэдать примитив 
+                                        if (dictDelegateMethodeEntity.ContainsKey(commandEntity) == true)
+                                            pEntity = dictDelegateMethodeEntity[commandEntity].newEntity(rEntity, format/*, ews.Name*/);
+                                        else
+                                            ;
 
-                            if (!(pEntity == null))
-                                Add(
-                                    nameEntity
-                                    , pEntity.GetValueOrDefault()
-                                );
-                            else
-                                Logging.AcEditorWriteMessage(string.Format(@"Элемент с именем {0} пропущен..."
-                                    , nameEntity
+                                        if (!(pEntity == null))
+                                            s_dictBlock.AddEntity(
+                                                ews.Name
+                                                , nameEntity
+                                                , pEntity.GetValueOrDefault()
+                                            );
+                                        else
+                                            Logging.AcEditorWriteMessage(string.Format(@"Элемент с именем {0} пропущен..."
+                                                , nameEntity
+                                            ));
+                                    } else
+                                    // ошибка при получении типа и наименования примитива
+                                        ;
+                                } // цикл по строкам таблицы для листа книги MS Excel
+
+                                Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} обработано строк = {1}, добавлено элементов {2}"
+                                    , ews.Name
+                                    , range.LastRowIndex + 1
+                                    , _dictDataTableOfExcelWorksheet[ews.Name].Rows.Count
                                 ));
-                        } else
-                        // ошибка при получении типа и наименования примитива
-                            ;
-                    } // цикл по строкам таблицы для листа книги MS Excel
-
-                    Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} обработано строк = {1}, добавлено элементов {2}"
-                        , ews.Name
-                        , range.LastRowIndex
-                        , _dictDataTableOfExcelWorksheet[ews.Name].Rows.Count
-                    ));
+                                break;
+                        }
+                    
+                    } else
+                    // нет строк с данными
+                        Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} нет строк для распознования", ews.Name));
                 } else
-                // нет строк с данными
-                    Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} нет строк для распознования", ews.Name));
+                    ; // страница(лист) с конфигурацией 
             }
 
             return iRes;
@@ -307,7 +358,7 @@ namespace Autodesk.Cad.Crushner.Common
 
             try {
                 ews.ExtractToDataTable(_dictDataTableOfExcelWorksheet[ews.Name]
-                    , range.LastRowIndex
+                    , range.LastRowIndex + 1
                     , ExtractDataOptions.SkipEmptyRows | ExtractDataOptions.StopAtFirstEmptyRow
                     , ews.Rows[range.FirstRowIndex + (format == FORMAT.HEAP ? 0 : format == FORMAT.ORDER ? 1 : 0)]
                     , ews.Columns[range.FirstColumnIndex]
@@ -451,7 +502,7 @@ namespace Autodesk.Cad.Crushner.Common
 
                         acDoc.Editor.WriteMessage(string.Format(@"{0}Очистка листа с имененм = {1}", Environment.NewLine, ews.Name));
 
-                        if (range.LastRowIndex > 0) {
+                        if ((range.LastRowIndex + 1) > 0) {
                             // создать структуру таблицы - добавить поля в таблицу, при необходимости создать таблицу
                             createDataTableWorksheet(ews.Name, range);
                             // удалить значения, если есть
@@ -460,7 +511,7 @@ namespace Autodesk.Cad.Crushner.Common
                             else
                                 ;
 
-                            for (i = range.FirstRowIndex + (format == FORMAT.HEAP ? 0 : format == FORMAT.ORDER ? 1 : 0); !(i > range.LastRowIndex); i++) {
+                            for (i = range.FirstRowIndex + (format == FORMAT.HEAP ? 0 : format == FORMAT.ORDER ? 1 : 0); !(i > (range.LastRowIndex + 1)); i++) {
                                 for (j = range.FirstColumnIndex; !(j > range.LastColumnIndex); j++) {
                                     range[i - range.FirstRowIndex, j - range.FirstColumnIndex].Value = string.Empty;
                                 }
@@ -509,8 +560,8 @@ namespace Autodesk.Cad.Crushner.Common
                                 , false
                             );
 
-                            //if (range.LastRowIndex > 0) {
-                            //    for (i = range.FirstRowIndex + 1; !(i > range.LastRowIndex); i++) {
+                            //if ((range.LastRowIndex + 1) > 0) {
+                            //    for (i = range.FirstRowIndex + 1; !(i > (range.LastRowIndex + 1)); i++) {
                             //        for (j = range.FirstColumnIndex; !(j > range.LastColumnIndex); j++) {
                             //            range[i - range.FirstRowIndex, j - range.FirstColumnIndex].Value = string.Empty;
                             //        }
@@ -529,126 +580,124 @@ namespace Autodesk.Cad.Crushner.Common
                 acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
         }
-        /// <summary>
-        /// Список примитивов, подготовленный для экспорта (что есть на чертеже)
-        ///  , для сравнения с импортированным ранее; в случае разницы добавлять/удалять примитивы
-        /// </summary>
-        private static List<KEY_ENTITY> _listKeyEntityToExport = null;
-        /// <summary>
-        /// Добавить примитив в список, подготовленный для экспорта (что есть на чертеже)
-        /// </summary>
-        /// <param name="pEntity">Примитив для добавления</param>
-        public static void AddToExport(EntityParser.ProxyEntity pEntity)
-        {
-            if (_listKeyEntityToExport == null)
-                _listKeyEntityToExport = new List<KEY_ENTITY>();
-            else
-                ;
 
-            if (s_dictEntity.Values.Contains(pEntity) == false)
-                s_dictEntity.Add(GetKeyEntity(
-                        pEntity
-                        , pEntity is Solid3d ? (pEntity.m_entity as Acad3DSolid).SolidType : string.Empty
-                    )
-                    , pEntity
-                );
-            else
-                _listKeyEntityToExport.Add(s_dictEntity.FirstOrDefault(x => (x.Value.m_entity as DBObject).ObjectId == (pEntity.m_entity as DBObject).ObjectId).Key);
-        }
-        /// <summary>
-        /// Экспортировать список объектов в книгу MS Excel
-        /// </summary>
-        public static int Export(string strNameSettingsExcelFile = @"", FORMAT format = FORMAT.ORDER)
-        {
-            int iErr = -1;
+        #region ??? Export - не реализован
+        ///// <summary>
+        ///// Список примитивов, подготовленный для экспорта (что есть на чертеже)
+        /////  , для сравнения с импортированным ранее; в случае разницы добавлять/удалять примитивы
+        ///// </summary>
+        //private static List<KEY_ENTITY> _listKeyEntityToExport = null;
+        ///// <summary>
+        ///// Добавить примитив в список, подготовленный для экспорта (что есть на чертеже)
+        ///// </summary>
+        ///// <param name="pEntity">Примитив для добавления</param>
+        //public static void AddToExport(EntityParser.ProxyEntity pEntity)
+        //{
+        //    if (_listKeyEntityToExport == null)
+        //        _listKeyEntityToExport = new List<KEY_ENTITY>();
+        //    else
+        //        ;
 
-            object[] dataRow = null;
-            string nameWorksheet = string.Empty;
-            COMMAND_ENTITY commandEntity = COMMAND_ENTITY.UNKNOWN;
-            List<KEY_ENTITY> _listKeyEntityForDelete = null;
+        //    if (s_dictBlock.AddToExport(pEntity) == true)
+        //        _listKeyEntityToExport.Add(s_dictBlock.GetKeyEntity (pEntity));
+        //    else
+        //        ;
+        //}
+        ///// <summary>
+        ///// Экспортировать список объектов в книгу MS Excel
+        ///// </summary>
+        //public static int Export(string strNameSettingsExcelFile = @"", FORMAT format = FORMAT.ORDER)
+        //{
+        //    int iErr = -1;
 
-            if (!(_listKeyEntityToExport == null)) {
-            // удалить лишние элементы
-                if (!(s_dictEntity.Keys.Count == _listKeyEntityToExport.Count))
-                    if (s_dictEntity.Keys.Count < _listKeyEntityToExport.Count)
-                        foreach (KEY_ENTITY key in _listKeyEntityToExport)
-                            if (s_dictEntity.Keys.Contains(key) == false)
-                                s_dictEntity.Remove(key);
-                            else
-                                ;
-                    else
-                        if (s_dictEntity.Keys.Count > _listKeyEntityToExport.Count) {
-                            _listKeyEntityForDelete = new List<KEY_ENTITY>();
+        //    object[] dataRow = null;
+        //    string nameWorksheet = string.Empty;
+        //    COMMAND_ENTITY commandEntity = COMMAND_ENTITY.UNKNOWN;
+        //    List<KEY_ENTITY> _listKeyEntityForDelete = null;
 
-                            foreach (KEY_ENTITY key in s_dictEntity.Keys)
-                                if (_listKeyEntityToExport.IndexOf(key) < 0)
-                                    _listKeyEntityForDelete.Add(key);
-                                else
-                                    ;
-                            //???
-                            foreach (KEY_ENTITY key in _listKeyEntityForDelete)
-                                s_dictEntity.Remove(key);
-                        } else
-                            ; // других вариантов быть не может
-                else
-                    ; //??? кол-во равно, но объекты м.б. различные
+        //    if (!(_listKeyEntityToExport == null)) {
+        //    // удалить лишние элементы
+        //        if (!(s_dictEntity.Keys.Count == _listKeyEntityToExport.Count))
+        //            if (s_dictEntity.Keys.Count < _listKeyEntityToExport.Count)
+        //                foreach (KEY_ENTITY key in _listKeyEntityToExport)
+        //                    if (s_dictEntity.Keys.Contains(key) == false)
+        //                        s_dictEntity.Remove(key);
+        //                    else
+        //                        ;
+        //            else
+        //                if (s_dictEntity.Keys.Count > _listKeyEntityToExport.Count) {
+        //                    _listKeyEntityForDelete = new List<KEY_ENTITY>();
 
-                _listKeyEntityToExport.Clear();
-                _listKeyEntityToExport = null;
-            } else
-                ;
+        //                    foreach (KEY_ENTITY key in s_dictEntity.Keys)
+        //                        if (_listKeyEntityToExport.IndexOf(key) < 0)
+        //                            _listKeyEntityForDelete.Add(key);
+        //                        else
+        //                            ;
+        //                    //???
+        //                    foreach (KEY_ENTITY key in _listKeyEntityForDelete)
+        //                        s_dictEntity.Remove(key);
+        //                } else
+        //                    ; // других вариантов быть не может
+        //        else
+        //            ; //??? кол-во равно, но объекты м.б. различные
 
-            try {
-                clearWorkbook(strNameSettingsExcelFile, format);
+        //        _listKeyEntityToExport.Clear();
+        //        _listKeyEntityToExport = null;
+        //    } else
+        //        ;
 
-                switch (format) {
-                    case FORMAT.HEAP:
-                        ExcelFile ef = new ExcelFile();
-                        ef.LoadXls(getFullNameSettingsExcelFile(strNameSettingsExcelFile), XlsOptions.None);
-                        nameWorksheet = ef.Worksheets[0].Name;
-                        break;
-                    case FORMAT.ORDER:
-                    default:
-                        // зависит от типа примитива (будет определена при каждой итерации)
-                        break;
-                }
+        //    try {
+        //        clearWorkbook(strNameSettingsExcelFile, format);
 
-                foreach (KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair in s_dictEntity) {
-                    switch (format) {
-                        case FORMAT.HEAP:
-                            // 'nameWorksheet' определено ранее (не зависит от типа примитива)
-                            commandEntity = pair.Key.m_command;
-                            break;
-                        case FORMAT.ORDER:
-                        default:
-                            nameWorksheet = s_MappingKeyEntity.Find(type => type.m_type == pair.Value.GetType()).Name;
-                            commandEntity = (COMMAND_ENTITY)Enum.Parse(typeof(COMMAND_ENTITY), nameWorksheet);
-                            break;
-                    }
+        //        switch (format) {
+        //            case FORMAT.HEAP:
+        //                ExcelFile ef = new ExcelFile();
+        //                ef.LoadXls(getFullNameSettingsExcelFile(strNameSettingsExcelFile), XlsOptions.None);
+        //                nameWorksheet = ef.Worksheets[0].Name;
+        //                break;
+        //            case FORMAT.ORDER:
+        //            default:
+        //                // зависит от типа примитива (будет определена при каждой итерации)
+        //                break;
+        //        }
 
-                    if (dictDelegateMethodeEntity.ContainsKey(commandEntity) == true)
-                        dataRow = dictDelegateMethodeEntity[commandEntity].entityToDataRow(pair, format);
-                    else
-                        ;
+        //        foreach (KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair in s_dictEntity) {
+        //            switch (format) {
+        //                case FORMAT.HEAP:
+        //                    // 'nameWorksheet' определено ранее (не зависит от типа примитива)
+        //                    commandEntity = pair.Key.m_command;
+        //                    break;
+        //                case FORMAT.ORDER:
+        //                default:
+        //                    nameWorksheet = s_MappingKeyEntity.Find(type => type.m_type == pair.Value.GetType()).Name;
+        //                    commandEntity = (COMMAND_ENTITY)Enum.Parse(typeof(COMMAND_ENTITY), nameWorksheet);
+        //                    break;
+        //            }
 
-                    if (!(dataRow == null))
-                        _dictDataTableOfExcelWorksheet[nameWorksheet].Rows.Add(dataRow);
-                    else
-                        ;
-                }
+        //            if (dictDelegateMethodeEntity.ContainsKey(commandEntity) == true)
+        //                dataRow = dictDelegateMethodeEntity[commandEntity].entityToDataRow(pair, format);
+        //            else
+        //                ;
 
-                saveWorkbook(strNameSettingsExcelFile, format);
+        //            if (!(dataRow == null))
+        //                _dictDataTableOfExcelWorksheet[nameWorksheet].Rows.Add(dataRow);
+        //            else
+        //                ;
+        //        }
 
-                iErr = 0; // нет ошибок
-            } catch (Exception e) {
-                iErr = -1;
+        //        saveWorkbook(strNameSettingsExcelFile, format);
 
-                Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
+        //        iErr = 0; // нет ошибок
+        //    } catch (Exception e) {
+        //        iErr = -1;
 
-                Logging.AcEditorWriteException(e, @"Очистка-Преобразование-Сохранение...");
-            }
+        //        Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
 
-            return iErr;
-            }
+        //        Logging.AcEditorWriteException(e, @"Очистка-Преобразование-Сохранение...");
+        //    }
+
+        //    return iErr;
+        //}
+        #endregion
     }
 }

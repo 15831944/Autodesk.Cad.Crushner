@@ -102,6 +102,18 @@ namespace Autodesk.Cad.Crushner.Launch_005
 
             MSExcel.Clear();
         }
+        /// <summary>
+        /// Метод плагина для выполнения команды - отобразить все примитивы
+        /// </summary>
+        [CommandMethod("LAUNCH-005-PAINT")]
+        public void Paint()
+        {
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-PAINT_ALL"));
+
+            reinitialize();
+
+            flash();
+        }
         #endregion
 
         #region Управление (в т.ч. добавление) примитивов

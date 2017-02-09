@@ -12,11 +12,11 @@ using Autodesk.AutoCAD.Geometry;
 using System.IO;
 using System.Reflection;
 
-using Autodesk.Cad.Crushner.Common;
+using Autodesk.Cad.Crushner.Core;
 
-namespace Autodesk.Cad.Crushner.Launch_004
+namespace Autodesk.Cad.Crushner.Command
 {
-    public class Launch_004 : Core
+    public class Command : Core.Command
     {
         #region Обязательные методы плюгина
         /// <summary>
@@ -52,39 +52,39 @@ namespace Autodesk.Cad.Crushner.Launch_004
         /// <summary>
         /// Метод плагина для выполнения команды - добавить окружность
         /// </summary>
-        [CommandMethod("LAUNCH-004-IMPORT")]
+        [CommandMethod("LAUNCH-005-IMPORT")]
         public void Import()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-004-IMPORT"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-IMPORT"));
 
             reinitialize();
 
             MSExcel.Clear();
             clear();
 
-            MSExcel.Import(@"settings_004.xls", MSExcel.FORMAT.HEAP);
+            MSExcel.Import(@"settings_005.xls", MSExcel.FORMAT.HEAP);
 
             flash();
         }
         ///// <summary>
         ///// Метод плагина для выполнения команды - добавить прямую линию
         ///// </summary>
-        //[CommandMethod("LAUNCH-004-EXPORT")]
+        //[CommandMethod("LAUNCH-005-EXPORT")]
         //public void Export()
         //{
-        //    Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-004-EXPORT"));
+        //    Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-EXPORT"));
 
         //    reinitialize();
 
-        //    export(@"settings_004.xls", MSExcel.FORMAT.HEAP);
+        //    export(@"settings_005.xls", MSExcel.FORMAT.HEAP);
         //}
         /// <summary>
         /// Метод плагина для выполнения команды - удалить все примитивы с чертежа
         /// </summary>
-        [CommandMethod("LAUNCH-004-CLEAR_DRAWING")]
+        [CommandMethod("LAUNCH-005-CLEAR_DRAWING")]
         public void ClearDrawing()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-004-CLEAR_DRAWING"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-CLEAR_DRAWING"));
 
             reinitialize();
 
@@ -93,14 +93,26 @@ namespace Autodesk.Cad.Crushner.Launch_004
         /// <summary>
         /// Метод плагина для выполнения команды - очитстиь файл конфигурации
         /// </summary>
-        [CommandMethod("LAUNCH-004-CLEAR_SETTINGS")]
+        [CommandMethod("LAUNCH-005-CLEAR_SETTINGS")]
         public void ClearSettings()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-004-CLEAR_SETTINGS"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-CLEAR_SETTINGS"));
 
             reinitialize();
 
             MSExcel.Clear();
+        }
+        /// <summary>
+        /// Метод плагина для выполнения команды - отобразить все примитивы
+        /// </summary>
+        [CommandMethod("LAUNCH-005-PAINT")]
+        public void Paint()
+        {
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-PAINT_ALL"));
+
+            reinitialize();
+
+            flash();
         }
         #endregion
 

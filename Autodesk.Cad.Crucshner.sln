@@ -22,13 +22,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		netload-auto.scr = netload-auto.scr
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "CommonLibrary\Common.csproj", "{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{3D234295-8573-4B85-820E-034DA7510CF9}"
 	ProjectSection(SolutionItems) = preProject
 		Document\Instruction-1.0.1.1.docx = Document\Instruction-1.0.1.1.docx
 		Document\Instruction-2016-01-14.docx = Document\Instruction-2016-01-14.docx
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

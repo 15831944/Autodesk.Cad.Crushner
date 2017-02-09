@@ -115,7 +115,7 @@ namespace Autodesk.Cad.Crushner.Core
         /// <summary>
         /// Метод плагина для выполнения команды - масштабировать примитивы
         /// </summary>
-        [CommandMethod("LAUNCH-000-ZOOM")]
+        [CommandMethod("CRU-ZOOM")]
         public void EntityZoom()
         {
             entityScaling();
@@ -169,7 +169,7 @@ namespace Autodesk.Cad.Crushner.Core
                             );
                         //} else
                         //    // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
-                        //    doc.Editor.WriteMessage(string.Format("\nСлой:{0}; тип:{1}; выполнение [LAUNCH-000-ZOOM] в настоящее время не поддерживается\n",
+                        //    doc.Editor.WriteMessage(string.Format("\nСлой:{0}; тип:{1}; выполнение [CRU-ZOOM] в настоящее время не поддерживается\n",
                         //        (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
                         //        , entity.GetType().ToString()));
                     }
@@ -178,7 +178,7 @@ namespace Autodesk.Cad.Crushner.Core
                 } catch (System.Exception e) {
                     Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
 
-                    Logging.AcEditorWriteException(e, @"LAUNCH-000-ZOOM");
+                    Logging.AcEditorWriteException(e, @"CRU-ZOOM");
                 }
             }
         }

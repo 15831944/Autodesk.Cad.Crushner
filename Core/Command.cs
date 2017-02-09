@@ -52,10 +52,10 @@ namespace Autodesk.Cad.Crushner.Command
         /// <summary>
         /// Метод плагина для выполнения команды - добавить окружность
         /// </summary>
-        [CommandMethod("LAUNCH-005-IMPORT")]
+        [CommandMethod("CRU-IMPORT")]
         public void Import()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-IMPORT"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"CRU-IMPORT"));
 
             reinitialize();
 
@@ -69,10 +69,10 @@ namespace Autodesk.Cad.Crushner.Command
         ///// <summary>
         ///// Метод плагина для выполнения команды - добавить прямую линию
         ///// </summary>
-        //[CommandMethod("LAUNCH-005-EXPORT")]
+        //[CommandMethod("CRU-EXPORT")]
         //public void Export()
         //{
-        //    Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-EXPORT"));
+        //    Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"CRU-EXPORT"));
 
         //    reinitialize();
 
@@ -81,10 +81,10 @@ namespace Autodesk.Cad.Crushner.Command
         /// <summary>
         /// Метод плагина для выполнения команды - удалить все примитивы с чертежа
         /// </summary>
-        [CommandMethod("LAUNCH-005-CLEAR_DRAWING")]
+        [CommandMethod("CRU-CLEAR_DRAWING")]
         public void ClearDrawing()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-CLEAR_DRAWING"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"CRU-CLEAR_DRAWING"));
 
             reinitialize();
 
@@ -93,10 +93,10 @@ namespace Autodesk.Cad.Crushner.Command
         /// <summary>
         /// Метод плагина для выполнения команды - очитстиь файл конфигурации
         /// </summary>
-        [CommandMethod("LAUNCH-005-CLEAR_SETTINGS")]
+        [CommandMethod("CRU-CLEAR_SETTINGS")]
         public void ClearSettings()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-CLEAR_SETTINGS"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"CRU-CLEAR_SETTINGS"));
 
             reinitialize();
 
@@ -105,10 +105,10 @@ namespace Autodesk.Cad.Crushner.Command
         /// <summary>
         /// Метод плагина для выполнения команды - отобразить все примитивы
         /// </summary>
-        [CommandMethod("LAUNCH-005-PAINT")]
+        [CommandMethod("CRU-PAINT")]
         public void Paint()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"LAUNCH-005-PAINT_ALL"));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"CRU-PAINT_ALL"));
 
             reinitialize();
 

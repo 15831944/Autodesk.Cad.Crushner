@@ -18,9 +18,9 @@ using Autodesk.AutoCAD.Interop.Common;
 //using AppService = Autodesk.AutoCAD.ApplicationServices;
 //using RunTime = Autodesk.AutoCAD.Runtime;
 
-namespace Autodesk.Cad.Crushner.Common
+namespace Autodesk.Cad.Crushner.Core
 {
-    public abstract class Launch_000 : IExtensionApplication
+    public abstract class Command : IExtensionApplication
     {
         /// <summary>
         /// Наименование шаблона для создания нового документа(чертежа)

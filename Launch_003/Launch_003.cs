@@ -16,7 +16,7 @@ using Autodesk.Cad.Crushner.Common;
 
 namespace Autodesk.Cad.Crushner.Launch_003
 {
-    public class Launch_003 : Launch_000
+    public class Launch_003 : Core
     {
         #region Обязательные методы плюгина
         /// <summary>

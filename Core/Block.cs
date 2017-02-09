@@ -8,7 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 
-namespace Autodesk.Cad.Crushner.Common
+namespace Autodesk.Cad.Crushner.Core
 {
     partial class MSExcel
     {

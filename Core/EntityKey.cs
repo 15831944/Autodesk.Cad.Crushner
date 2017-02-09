@@ -7,7 +7,7 @@ using System.Text;
 
 using Autodesk.AutoCAD.Interop.Common;
 
-namespace Autodesk.Cad.Crushner.Common
+namespace Autodesk.Cad.Crushner.Core
 {
     /// <summary>
     /// Перечисление - типы примитивов

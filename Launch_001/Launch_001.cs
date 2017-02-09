@@ -17,7 +17,7 @@ using Autodesk.Cad.Crushner.Common;
 
 namespace Autodesk.Cad.Crushner.Launch_001
 {
-    public class Launch_001 : Launch_000 
+    public class Launch_001 : Core 
     {
         /// <summary>
         /// Словарь акций-методов для создания того или иного типа примтивов

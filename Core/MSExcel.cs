@@ -15,7 +15,7 @@ using excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using Autodesk.AutoCAD.Interop.Common;
 
-namespace Autodesk.Cad.Crushner.Common
+namespace Autodesk.Cad.Crushner.Core
 {
     public partial class MSExcel : Collection
     {

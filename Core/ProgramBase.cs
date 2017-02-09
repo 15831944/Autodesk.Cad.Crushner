@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autodesk.Cad.Crushner.Common
+namespace Autodesk.Cad.Crushner.Core
 {
     public class ProgramBase
     {

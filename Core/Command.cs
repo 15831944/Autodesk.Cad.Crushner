@@ -52,19 +52,45 @@ namespace Autodesk.Cad.Crushner.Command
         /// <summary>
         /// Метод плагина для выполнения команды - добавить окружность
         /// </summary>
+        [CommandMethod("GO")]
+        public void Go()
+        {
+            string command = @"GO";
+
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполняется команда: {0} - перенаправление CRU-IMPORT", command));
+
+            try {
+                Application.DocumentManager.MdiActiveDocument.SendStringToExecute(@"CRU-IMPORT ", true, true, true);
+            } catch (System.Exception e) {
+                Logging.AcEditorWriteException(e, command);
+
+                Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
+            }
+        }
+        /// <summary>
+        /// Метод плагина для выполнения команды - добавить окружность
+        /// </summary>
         [CommandMethod("CRU-IMPORT")]
         public void Import()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", @"CRU-IMPORT"));
+            string command = @"CRU-IMPORT";
 
-            reinitialize();
+            try {
+                reinitialize();
 
-            MSExcel.Clear();
-            clear();
+                MSExcel.Clear();
+                clear();
 
-            MSExcel.Import(@"settings_005.xls", MSExcel.FORMAT.HEAP);
+                MSExcel.Import(@"settings.xls", MSExcel.FORMAT.HEAP);
 
-            flash();
+                flash();
+            } catch (System.Exception e) {
+                    Logging.AcEditorWriteException(e, command);
+
+                    Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
+            }
+
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполнена команда: {0}", command));
         }
         ///// <summary>
         ///// Метод плагина для выполнения команды - добавить прямую линию
@@ -76,7 +102,7 @@ namespace Autodesk.Cad.Crushner.Command
 
         //    reinitialize();
 
-        //    export(@"settings_005.xls", MSExcel.FORMAT.HEAP);
+        //    export(@"settings.xls", MSExcel.FORMAT.HEAP);
         //}
         /// <summary>
         /// Метод плагина для выполнения команды - удалить все примитивы с чертежа

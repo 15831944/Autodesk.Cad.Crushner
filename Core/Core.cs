@@ -238,6 +238,7 @@ namespace Autodesk.Cad.Crushner.Core
         protected void clear()
         {
             Database db = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
+            List<string> listBlockNameToErase = new List<string>();
 
             // начинаем транзакцию
             using (Transaction tr = db.TransactionManager.StartTransaction()) {
@@ -253,22 +254,131 @@ namespace Autodesk.Cad.Crushner.Core
                     // приводим каждый из них к типу object
                     object entity = (object)tr.GetObject(id, OpenMode.ForWrite);
 
-                    // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
-                    Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage(
-                        string.Format("\n!!!Для удаления - слой:{0}; тип:{1}; цвет: [{2},{3},{4}]\n",
-                            (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
-                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).GetType().ToString()
-                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Red.ToString()
-                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Green.ToString()
-                            , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Color.Blue.ToString())
-                    );
+                    if (!(entity is BlockReference)) {
+                        // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и имя блока для объекта
+                        Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage(
+                            string.Format("\n!!!Для удаления - слой:{0}; тип:{1}; имя: {2}\n",
+                                (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).Layer
+                                , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).GetType().ToString()
+                                , (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null).BlockName)
+                        );
 
-                    (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null)?.Erase();
+                        (entity is Entity ? entity as Entity : entity is Solid3d ? entity as Solid3d : null)?.Erase();
+                    } else
+                        if (listBlockNameToErase.IndexOf((entity as BlockReference).Name) < 0)
+                            listBlockNameToErase.Add((entity as BlockReference).Name);
+                        else
+                            ;
                 }
 
                 tr.Commit();
             }
+
+            listBlockNameToErase.ForEach(blockName => { EraseBlock(blockName); });
         }
+
+        #region ??? Тест - Удаление блока
+        public void EraseBlock(string blockName)
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            AutoCAD.EditorInput.Editor ed = doc.Editor;
+
+            try {
+                var blockId = getBlockId(db, blockName);
+                if (blockId.IsNull)
+                    throw new System.Exception(string.Format("\n Block not found: {0}", blockName));
+
+                if (!eraseBlockReferences(blockId))
+                    throw new System.Exception(string.Format("\n Failed to erase Block References for: {0}", blockName));
+
+                if (!eraseBlockDefinition(blockId))
+                    throw new System.Exception(string.Format("\n Failed to erase Block Definition: {0}", blockName));
+
+                ed.WriteMessage("\n Block full erased: {0}", blockName);
+            } catch (System.Exception ex) {
+                ed.WriteMessage(ex.Message);
+            }
+        }
+
+        protected static ObjectId getBlockId(Database db, string blockName)
+        {
+
+            ObjectId blkId = ObjectId.Null;
+
+            if (db == null)
+                return ObjectId.Null;
+
+            if (string.IsNullOrWhiteSpace(blockName))
+                return ObjectId.Null;
+
+            using (Transaction tr = db.TransactionManager.StartTransaction())
+            {
+                BlockTable bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+                if (bt.Has(blockName))
+                    blkId = bt[blockName];
+                tr.Commit();
+            }
+            return blkId;
+        }
+
+        protected static bool eraseBlockReferences(ObjectId blockId)
+        {
+            bool bRes = false;
+
+            if (blockId.IsNull)
+                return false;
+
+            Database db = blockId.Database;
+            if (db == null)
+                return false;
+
+            using (Transaction tr = db.TransactionManager.StartTransaction()) {
+                BlockTableRecord blk = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead);
+                var blkRefs = blk.GetBlockReferenceIds(true, true);
+                if (blkRefs != null && blkRefs.Count > 0) {
+                    foreach (ObjectId blkRefId in blkRefs) {
+                        BlockReference blockRef = (BlockReference)tr.GetObject(blkRefId, OpenMode.ForWrite);
+                        blockRef.Erase();
+                    }
+
+                    bRes = true;
+                } else
+                    ;
+
+                tr.Commit();
+            }
+
+            return bRes;
+        }
+
+        protected static bool eraseBlockDefinition(ObjectId blockId)
+        {
+            bool blkIsErased = false;
+
+            if (blockId.IsNull)
+                return false;
+
+            Database db = blockId.Database;
+            if (db == null)
+                return false;
+
+            using (Transaction tr = db.TransactionManager.StartTransaction())
+            {
+
+                BlockTableRecord blk = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead);
+                var blkRefs = blk.GetBlockReferenceIds(true, true);
+                if (blkRefs == null || blkRefs.Count == 0)
+                {
+                    blk.UpgradeOpen();
+                    blk.Erase();
+                    blkIsErased = true;
+                }
+                tr.Commit();
+            }
+            return blkIsErased;
+        }
+        #endregion
 
         #region ??? Export - не реализован
         //protected void export(string nameFileSettings, MSExcel.FORMAT format)

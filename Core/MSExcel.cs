@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Data;
 
 using GemBox.Spreadsheet;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.ApplicationServices;
 using System.Reflection;
 using System.IO;
-
-using excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using Autodesk.AutoCAD.Interop.Common;
 
 namespace Autodesk.Cad.Crushner.Core
 {
@@ -81,6 +74,14 @@ namespace Autodesk.Cad.Crushner.Core
             , { COMMAND_ENTITY.PLINE3, new METHODE_ENTITY () { newEntity = EntityParser.newPolyLine3d, entityToDataRow = EntityParser.polyLine3dToDataRow } }
             , { COMMAND_ENTITY.CONE, new METHODE_ENTITY () { newEntity = EntityParser.newCone, entityToDataRow = EntityParser.coneToDataRow } }
             , { COMMAND_ENTITY.BOX, new METHODE_ENTITY () { newEntity = EntityParser.newBox, entityToDataRow = EntityParser.boxToDataRow } }
+            // векторы - линии
+            , { COMMAND_ENTITY.ALINE_X, new METHODE_ENTITY () { newEntity = EntityParser.newALineX, entityToDataRow = EntityParser.alineXToDataRow } }
+            , { COMMAND_ENTITY.ALINE_Y, new METHODE_ENTITY () { newEntity = EntityParser.newALineY, entityToDataRow = EntityParser.alineYToDataRow } }
+            , { COMMAND_ENTITY.ALINE_Z, new METHODE_ENTITY () { newEntity = EntityParser.newALineZ, entityToDataRow = EntityParser.alineZToDataRow } }
+            , { COMMAND_ENTITY.RLINE_X, new METHODE_ENTITY () { newEntity = EntityParser.newRLineX, entityToDataRow = EntityParser.rlineXToDataRow } }
+            , { COMMAND_ENTITY.RLINE_Y, new METHODE_ENTITY () { newEntity = EntityParser.newRLineY, entityToDataRow = EntityParser.rlineYToDataRow } }
+            , { COMMAND_ENTITY.RLINE_Z, new METHODE_ENTITY () { newEntity = EntityParser.newRLineZ, entityToDataRow = EntityParser.rlineZToDataRow } }
+            ,
         };
         /// <summary>
         /// Создать таблицу для проецирования значений с листа книги MS Excel
@@ -483,10 +484,6 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат книги MS Excel</param>
         private static void clearWorkbook(string strNameSettingsExcelFile = @"", FORMAT format = FORMAT.ORDER)
         {
-            Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
-            DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
-            Document acDoc = acDocMgr.GetDocument(dbCurrent);
-
             string strNameSettings = getFullNameSettingsExcelFile(strNameSettingsExcelFile);
             int i = -1, j = -1;
 
@@ -500,7 +497,7 @@ namespace Autodesk.Cad.Crushner.Core
                     foreach (ExcelWorksheet ews in ef.Worksheets) {
                         GemBox.Spreadsheet.CellRange range = ews.GetUsedCellRange();
 
-                        acDoc.Editor.WriteMessage(string.Format(@"{0}Очистка листа с имененм = {1}", Environment.NewLine, ews.Name));
+                        Logging.AcEditorWriteMessage(string.Format(@"{0}Очистка листа с имененм = {1}", Environment.NewLine, ews.Name));
 
                         if ((range.LastRowIndex + 1) > 0) {
                             // создать структуру таблицы - добавить поля в таблицу, при необходимости создать таблицу
@@ -522,9 +519,9 @@ namespace Autodesk.Cad.Crushner.Core
 
                     ef.SaveXls(strNameSettings);
                 } else
-                    acDoc.Editor.WriteMessage(string.Format(@"{0}Очистка книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
+                    Logging.AcEditorWriteMessage(string.Format(@"{0}Очистка книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
             } catch (Exception e) {
-                acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
+                Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
         }
         /// <summary>
@@ -534,10 +531,6 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат книги MS Excel</param>
         private static void saveWorkbook(string strNameSettingsExcelFile = @"", FORMAT format = FORMAT.ORDER)
         {
-            Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
-            DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
-            Document acDoc = acDocMgr.GetDocument(dbCurrent);
-
             string strNameSettings = getFullNameSettingsExcelFile(strNameSettingsExcelFile);
             int i = -1, j = -1;
 
@@ -551,7 +544,7 @@ namespace Autodesk.Cad.Crushner.Core
                     foreach (ExcelWorksheet ews in ef.Worksheets) {
                         GemBox.Spreadsheet.CellRange range = ews.GetUsedCellRange();
 
-                        acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение листа с имененм = {1}", Environment.NewLine, ews.Name));
+                        Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение листа с имененм = {1}", Environment.NewLine, ews.Name));
 
                         try {
                             ews.InsertDataTable(_dictDataTableOfExcelWorksheet[ews.Name]
@@ -569,15 +562,15 @@ namespace Autodesk.Cad.Crushner.Core
                             //} else
                             //    ;
                         } catch (Exception e) {
-                            acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение книги с имененм = {1}, лист = {2} невозможна", Environment.NewLine, strNameSettings, ews.Name));
+                            Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение книги с имененм = {1}, лист = {2} невозможна", Environment.NewLine, strNameSettings, ews.Name));
                         }
                     }
 
                     ef.SaveXls(strNameSettings);
                 } else
-                    acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
+                    Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
             } catch (Exception e) {
-                acDoc.Editor.WriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
+                Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
         }
 

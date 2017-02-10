@@ -9,7 +9,7 @@ Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "acad", "C:\Program Files\Au
 		Executable = C:\Program Files\Autodesk\AutoCAD 2013\acad.exe
 		RemoteMachine = HELL
 		StartingDirectory = C:\Program Files\Autodesk\AutoCAD 2013
-		Arguments = /nologo /b "D:\MyProject's\C.Net\Autodesk.Crushner.Launch\netload-auto.scr"
+		Arguments = /nologo /b "D:\MyProject's\C.Net\Autodesk.Crushner\netload-auto.scr"
 		Environment = По умолчанию
 		LaunchingEngine = fb0d4648-f776-4980-95f8-bb7f36ebc1ee
 		UseLegacyDebugEngines = No
@@ -29,6 +29,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{3D
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dawager", "Dawager\Dawager.csproj", "{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "Settings\Settings.csproj", "{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +54,22 @@ Global
 		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|x64.ActiveCfg = Release|Any CPU
 		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|x64.Build.0 = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|x64.Build.0 = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|x64.Build.0 = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|x64.ActiveCfg = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

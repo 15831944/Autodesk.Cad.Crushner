@@ -16,6 +16,7 @@ namespace Autodesk.Cad.Crushner.Core
     {
         UNKNOWN = -1
         , CIRCLE, ARC, LINE, PLINE3, CONE, BOX
+        , ALINE_X, ALINE_Y, ALINE_Z, RLINE_X, RLINE_Y, RLINE_Z
             , COUNT
     }
     /// <summary>
@@ -127,6 +128,13 @@ namespace Autodesk.Cad.Crushner.Core
             , new KEY_ENTITY () { m_command = COMMAND_ENTITY.PLINE3, m_index = -1, m_type = typeof(Polyline3d), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new KEY_ENTITY () { m_command = COMMAND_ENTITY.CONE, m_index = -1, m_type = typeof(Solid3d), m_nameSolidType = @"Frustum", m_nameCreateMethod = @"CreateFrustum" }
             , new KEY_ENTITY () { m_command = COMMAND_ENTITY.BOX, m_index = -1, m_type = typeof(Solid3d), m_nameSolidType = @"Box", m_nameCreateMethod = @"CreateBox" }
+            // линии - векторы
+            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_X, m_index = -1, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_Y, m_index = -1, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_Z, m_index = -1, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_X, m_index = -1, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_Y, m_index = -1, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_Z, m_index = -1, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             ,
         };
 
@@ -179,7 +187,7 @@ namespace Autodesk.Cad.Crushner.Core
 
         public static void Clear()
         {
-            s_dictBlock.Clear();
+            s_dictBlock?.Clear();
         }
     }
 

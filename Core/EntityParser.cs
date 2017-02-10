@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Autodesk.Cad.Crushner.Core
 {
-    public class EntityParser
+    public partial class EntityParser
     {
         public struct ProxyEntity
         {
@@ -51,18 +51,7 @@ namespace Autodesk.Cad.Crushner.Core
         //    {
         //        return new HProxyEntity(oSolid3d.UnmanagedObject, oSolid3d.AutoDelete);
         //    }
-        //}
-        /// <summary>
-        /// Перечисление - индексы столбцов на листе книги MS Excel в формате 'HEAP'
-        /// </summary>
-        private enum HEAP_INDEX_COLUMN {
-            CIRCLE_CENTER_X = 2, CIRCLE_CENTER_Y, CIRCLE_CENTER_Z, CIRCLE_RADIUS, CIRCLE_COLORINDEX, CIRCLE_TICKNESS
-            , ARC_CENTER_X = 2, ARC_CENTER_Y, ARC_CENTER_Z, ARC_RADIUS, ARC_ANGLE_START, ARC_ANGLE_END, ARC_COLORINDEX, ARC_TICKNESS
-            , LINE_START_X = 2, LINE_START_Y, LINE_START_Z, LINE_END_X, LINE_END_Y, LINE_END_Z, LINE_COLORINDEX, LINE_TICKNESS
-            , POLYLINE_X_START = 2
-            , CONE_HEIGHT = 2, CONE_ARADIUS_X, CONE_ARADIUS_Y, CONE_RADIUS_TOP, CONE_PTDISPLACEMENT_X, CONE_PTDISPLACEMENT_Y, CONE_PTDISPLACEMENT_Z
-            , BOX_LAENGTH_X = 2, BOX_LAENGTH_Y, BOX_LAENGTH_Z, BOX_PTDISPLACEMENT_X, BOX_PTDISPLACEMENT_Y, BOX_PTDISPLACEMENT_Z
-        }
+        //}        
         /// <summary>
         /// Создать новый примитив - ящик по значениям параметров из строки таблицы
         /// </summary>
@@ -82,12 +71,18 @@ namespace Autodesk.Cad.Crushner.Core
             switch (format)
             {
                 case MSExcel.FORMAT.HEAP:
-                    lAlongX = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.BOX_LAENGTH_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    lAlongY = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.BOX_LAENGTH_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    lAlongZ = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.BOX_LAENGTH_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    ptDisplacement[0] = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.BOX_PTDISPLACEMENT_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    ptDisplacement[1] = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.BOX_PTDISPLACEMENT_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    ptDisplacement[2] = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.BOX_PTDISPLACEMENT_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    lAlongX = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.BOX_LAENGTH_X].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    lAlongY = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.BOX_LAENGTH_Y].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    lAlongZ = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.BOX_LAENGTH_Z].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    ptDisplacement[0] = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.BOX_PTDISPLACEMENT_X].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    ptDisplacement[1] = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.BOX_PTDISPLACEMENT_Y].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    ptDisplacement[2] = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.BOX_PTDISPLACEMENT_Z].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                     ((Solid3d)pEntityRes.m_entity).CreateBox(lAlongX, lAlongY, lAlongZ);
                     pEntityRes.SetPoint3dDisplacement (ptDisplacement);
@@ -132,13 +127,20 @@ namespace Autodesk.Cad.Crushner.Core
             // значения для параметров примитива
             switch (format) {
                 case MSExcel.FORMAT.HEAP:
-                    height = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_HEIGHT].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    rAlongX = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_ARADIUS_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    rAlongY = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_ARADIUS_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    rTop = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_RADIUS_TOP].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    ptDisplacement[0] = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_PTDISPLACEMENT_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    ptDisplacement[1] = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_PTDISPLACEMENT_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    ptDisplacement[2] = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CONE_PTDISPLACEMENT_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    height = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_HEIGHT].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    rAlongX = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_ARADIUS_X].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    rAlongY = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_ARADIUS_Y].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    rTop = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_RADIUS_TOP].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    ptDisplacement[0] = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_PTDISPLACEMENT_X].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    ptDisplacement[1] = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_PTDISPLACEMENT_Y].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    ptDisplacement[2] = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CONE_PTDISPLACEMENT_Z].ToString()
+                        , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                     //pEntityRes = new ProxyEntity (new Solid3d());
                     pEntityRes.m_entity = coneCtor.Invoke(new object[] { }) as Solid3d;
@@ -189,16 +191,16 @@ namespace Autodesk.Cad.Crushner.Core
             // значения для параметров примитива
             switch (format) {
                 case MSExcel.FORMAT.HEAP:
-                    cntVertex = ((rEntity.Table.Columns.Count - (int)HEAP_INDEX_COLUMN.POLYLINE_X_START)
-                        - (rEntity.Table.Columns.Count - (int)HEAP_INDEX_COLUMN.POLYLINE_X_START) % 3) / 3;
+                    cntVertex = ((rEntity.Table.Columns.Count - (int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START)
+                        - (rEntity.Table.Columns.Count - (int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START) % 3) / 3;
 
                     for (j = 0; j < cntVertex; j ++) {
-                        if ((!(rEntity[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)] is DBNull))
-                            && (!(rEntity[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)] is DBNull))
-                            && (!(rEntity[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)] is DBNull)))
-                            if ((double.TryParse((string)rEntity[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)], out point3d[0]) == true)
-                                && (double.TryParse((string)rEntity[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)], out point3d[1]) == true)
-                                && (double.TryParse((string)rEntity[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)], out point3d[2]) == true))
+                        if ((!(rEntity[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)] is DBNull))
+                            && (!(rEntity[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)] is DBNull))
+                            && (!(rEntity[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)] is DBNull)))
+                            if ((double.TryParse((string)rEntity[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)], out point3d[0]) == true)
+                                && (double.TryParse((string)rEntity[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)], out point3d[1]) == true)
+                                && (double.TryParse((string)rEntity[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)], out point3d[2]) == true))
                                 pnts.Add(new Point3d(point3d));
                             else
                                 break;
@@ -245,12 +247,12 @@ namespace Autodesk.Cad.Crushner.Core
             switch (format) {
                 case MSExcel.FORMAT.HEAP:
                     (pEntityRes.m_entity as Circle).Center = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_CENTER_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_CENTER_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_CENTER_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (pEntityRes.m_entity as Circle).Radius = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_RADIUS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (pEntityRes.m_entity as Circle).ColorIndex = int.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_COLORINDEX].ToString());
-                    (pEntityRes.m_entity as Circle).Thickness = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.CIRCLE_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                        double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CIRCLE_CENTER_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
+                        , double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CIRCLE_CENTER_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
+                        , double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CIRCLE_CENTER_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
+                    (pEntityRes.m_entity as Circle).Radius = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CIRCLE_RADIUS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    (pEntityRes.m_entity as Circle).ColorIndex = int.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CIRCLE_COLORINDEX].ToString());
+                    (pEntityRes.m_entity as Circle).Thickness = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.CIRCLE_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                     //pEntityRes.m_BlockName = blockName;
                     break;
@@ -285,14 +287,14 @@ namespace Autodesk.Cad.Crushner.Core
             switch (format) {
                 case MSExcel.FORMAT.HEAP:
                     (pEntityRes.m_entity as Arc).Center = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_CENTER_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_CENTER_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_CENTER_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (pEntityRes.m_entity as Arc).Radius = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_RADIUS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (pEntityRes.m_entity as Arc).StartAngle = (Math.PI / 180) * float.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_ANGLE_START].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (pEntityRes.m_entity as Arc).EndAngle = (Math.PI / 180) * float.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_ANGLE_END].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    (pEntityRes.m_entity as Arc).ColorIndex = int.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_COLORINDEX].ToString());
-                    (pEntityRes.m_entity as Arc).Thickness = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.ARC_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                        double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_CENTER_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
+                        , double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_CENTER_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
+                        , double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_CENTER_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
+                    (pEntityRes.m_entity as Arc).Radius = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_RADIUS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    (pEntityRes.m_entity as Arc).StartAngle = (Math.PI / 180) * float.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_ANGLE_START].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    (pEntityRes.m_entity as Arc).EndAngle = (Math.PI / 180) * float.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_ANGLE_END].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    (pEntityRes.m_entity as Arc).ColorIndex = int.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_COLORINDEX].ToString());
+                    (pEntityRes.m_entity as Arc).Thickness = double.Parse(rEntity[(int)Settings.Collection.HEAP_INDEX_COLUMN.ARC_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                     //pEntityRes.m_BlockName = blockName;
                     break;
@@ -306,52 +308,6 @@ namespace Autodesk.Cad.Crushner.Core
                     (pEntityRes.m_entity as Arc).EndAngle = (Math.PI / 180) * float.Parse(rEntity[@"ANGLE.END"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
                     (pEntityRes.m_entity as Arc).ColorIndex = int.Parse(rEntity[@"ColorIndex"].ToString());
                     (pEntityRes.m_entity as Arc).Thickness = double.Parse(rEntity[@"TICKNESS"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                    break;
-                default:
-                    break;
-            }
-
-            return pEntityRes;
-        }
-        /// <summary>
-        /// Создать новый примитив - линия по значениям параметров из строки таблицы
-        /// </summary>
-        /// <param name="rEntity">Строка таблицы со значениями параметров примитива</param>
-        /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
-        /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
-        /// <returns>Объект примитива - линия</returns>
-        public static EntityParser.ProxyEntity newLine(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
-        {
-            EntityParser.ProxyEntity pEntityRes;
-            // соэдать примитив 
-            pEntityRes = new ProxyEntity (new Line());
-            // значения для параметров примитива
-            switch (format) {
-                case MSExcel.FORMAT.HEAP:
-                    (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_START_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_START_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_START_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (pEntityRes.m_entity as Line).EndPoint = new Point3d(
-                        double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_END_X].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_END_Y].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_END_Z].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (pEntityRes.m_entity as Line).ColorIndex = int.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_COLORINDEX].ToString());
-                    (pEntityRes.m_entity as Line).Thickness = double.Parse(rEntity[(int)HEAP_INDEX_COLUMN.LINE_TICKNESS].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-
-                    //pEntityRes.m_BlockName = blockName;
-                    break;
-                case MSExcel.FORMAT.ORDER:
-                    (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                        double.Parse(rEntity[@"START.X"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"START.Y"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"START.Z"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (pEntityRes.m_entity as Line).EndPoint = new Point3d(
-                        double.Parse(rEntity[@"END.X"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"END.Y"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture)
-                        , double.Parse(rEntity[@"END.Z"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture));
-                    (pEntityRes.m_entity as Line).ColorIndex = int.Parse(rEntity[@"ColorIndex"].ToString());
-                    (pEntityRes.m_entity as Line).Thickness = double.Parse(rEntity[@"TICKNESS"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 default:
                     break;
@@ -427,7 +383,7 @@ namespace Autodesk.Cad.Crushner.Core
                 case MSExcel.FORMAT.HEAP:
                     cntVertex = (int)(pair.Value.m_entity as Polyline3d).Length;
 
-                    rowRes = new object[(int)HEAP_INDEX_COLUMN.POLYLINE_X_START + cntVertex];
+                    rowRes = new object[(int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + cntVertex];
 
                     rowRes[0] = string.Format(@"{0}", pair.Key.Name); //NAME
                     rowRes[1] = string.Format(@"{0}", pair.Key.m_command.ToString()); //!!! COMMAND_ENTITY
@@ -435,9 +391,9 @@ namespace Autodesk.Cad.Crushner.Core
                     for (j = 0; j < cntVertex; j++) {
                         point3d = (pair.Value.m_entity as Polyline3d).GetPointAtParameter((double)j);
 
-                        rowRes[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)] = string.Format(@"{0:0.0}", point3d.X); //X
-                        rowRes[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)] = string.Format(@"{0:0.0}", point3d.Y); //Y
-                        rowRes[j * 3 + ((int)HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)] = string.Format(@"{0:0.0}", point3d.Z); //Z
+                        rowRes[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)] = string.Format(@"{0:0.0}", point3d.X); //X
+                        rowRes[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)] = string.Format(@"{0:0.0}", point3d.Y); //Y
+                        rowRes[j * 3 + ((int)Settings.Collection.HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)] = string.Format(@"{0:0.0}", point3d.Z); //Z
                     }
                     break;
                 case MSExcel.FORMAT.ORDER:
@@ -513,44 +469,6 @@ namespace Autodesk.Cad.Crushner.Core
                         , string.Format(@"{0:0}", (180 / Math.PI) * (pair.Value.m_entity as Arc).EndAngle) //END.ANGLE
                         , string.Format(@"{0}", (pair.Value.m_entity as Arc).ColorIndex) //ColorIndex
                         , string.Format(@"{0:0.000}", (pair.Value.m_entity as Arc).Thickness) //Tickness
-                    };
-                    break;
-            }
-
-            return rowRes;
-        }
-
-        public static object[] lineToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
-        {
-            object[] rowRes = null;
-
-            switch (format) {
-                case MSExcel.FORMAT.HEAP:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.X) //SATRT.X
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.Y) //START.Y
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.Z) //START.Z
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).EndPoint.X) //END.X
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).EndPoint.Y) //END.Y
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).EndPoint.Z) //END.Z
-                        , string.Format(@"{0}", (pair.Value.m_entity as Line).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value.m_entity as Line).Thickness) //Tickness
-                    };
-                    break;
-                case MSExcel.FORMAT.ORDER:
-                default:
-                    rowRes = new object[] {
-                        string.Format(@"{0}", pair.Key.Name) //NAME
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.X) //SATRT.X
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.Y) //START.Y
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.Z) //START.Z
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).EndPoint.X) //END.X
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).EndPoint.Y) //END.Y
-                        , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).EndPoint.Z) //END.Z
-                        , string.Format(@"{0}", (pair.Value.m_entity as Line).ColorIndex) //ColorIndex
-                        , string.Format(@"{0:0.000}", (pair.Value.m_entity as Line).Thickness) //Tickness
                     };
                     break;
             }

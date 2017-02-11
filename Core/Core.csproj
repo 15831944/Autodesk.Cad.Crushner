@@ -47,10 +47,6 @@
       <HintPath>C:\Program Files\Autodesk\AutoCAD 2013\Autodesk.AutoCAD.Interop.Common.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="GemBox.Spreadsheet, Version=41.3.30.1047, Culture=neutral, PublicKeyToken=b1b72c69714d4847, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ExternalDll\GemBox.Spreadsheet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -63,9 +59,9 @@
     <Compile Include="Block.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="EntityCtor.cs" />
     <Compile Include="EntityKey.cs" />
     <Compile Include="EntityParserLine.cs" />
-    <Compile Include="EntityParser.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MSExcel.cs" />
     <Compile Include="ProgramBase.cs" />
@@ -106,6 +102,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logging\Logging.csproj">
+      <Project>{f841f198-18f7-4e42-aafc-300f28e50f6b}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Settings\Settings.csproj">
       <Project>{94b4bc26-adb0-4b37-a5ca-0d3f56823356}</Project>
       <Name>Settings</Name>

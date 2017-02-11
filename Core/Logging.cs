@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Autodesk.Cad.Crushner.Core
 {
-    public static class Logging
+    public class Logging : Core.Logging.Logging
     {
         private static String m_logFileName = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
@@ -29,23 +29,6 @@ namespace Autodesk.Cad.Crushner.Core
             AcEditorWriteMessage(string.Format(@"{1}{0}{2}{0}{3}", Environment.NewLine, msg, e.Message, e.StackTrace));
         }
 
-        public static void ExceptionCaller(MethodBase methodBase, System.Exception e)
-        {
-            writeln(String.Format("{1}: Класс.Метод: {2}.{3}{0}{4}{0}{5}",
-                Environment.NewLine
-                , DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss")
-                , methodBase.ReflectedType.Name, methodBase.Name
-                , e.Message
-                , e.StackTrace));
-        }
-
-        public static void DebugCaller(MethodBase methodBase)
-        {
-            writeln(String.Format("{0}: Класс.Метод: {1}.{2}",
-                DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss")
-                , methodBase.ReflectedType.Name, methodBase.Name));
-        }
-
         public static void DebugCaller(MethodBase methodBase, string message)
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
@@ -59,17 +42,6 @@ namespace Autodesk.Cad.Crushner.Core
                 , methodBase.ReflectedType.Name, methodBase.Name
                 , documentName
                 , message));
-        }
-
-        private static void writeln(string line)
-        {
-            using (StreamWriter sw =
-                File.AppendText(m_logFileName))
-            {
-                sw.WriteLine(line);
-                sw.Flush();
-                sw.Close();
-            }
         }
     }
 }

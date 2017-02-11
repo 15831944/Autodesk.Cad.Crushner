@@ -7,10 +7,11 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using static Autodesk.Cad.Crushner.Settings.Collection;
 
 namespace Autodesk.Cad.Crushner.Core
 {
-    public partial class EntityParser
+    public partial class EntityCtor
     {
         public struct ProxyEntity
         {
@@ -59,9 +60,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - ящик</returns>
-        public static EntityParser.ProxyEntity newBox(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newBox(object[] arEntity)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             double lAlongX = -1F, lAlongY = -1F, lAlongZ = -1;
             double []ptDisplacement = new double[3];
 
@@ -104,9 +105,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - конус</returns>
-        public static EntityParser.ProxyEntity newCone(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newCone(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
 
             double height = -1F
                 , rAlongX = -1F, rAlongY = -1
@@ -120,7 +121,7 @@ namespace Autodesk.Cad.Crushner.Core
             ConstructorInfo coneCtor = keyEntity.m_type.GetConstructor(Type.EmptyTypes);
             MethodInfo methodCreate = keyEntity.m_type.GetMethod(keyEntity.m_nameCreateMethod);
 
-            pEntityRes = new EntityParser.ProxyEntity();
+            pEntityRes = new EntityCtor.ProxyEntity();
             pEntityRes.m_entity = null;
             pEntityRes.m_ptDisplacement = Point3d.Origin;
 
@@ -165,9 +166,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - кривая</returns>
-        public static EntityParser.ProxyEntity newPolyLine3d(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newPolyLine3d(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
 
             int cntVertex = -1 // количество точек
                 , j = -1; // счетчие вершин в цикле
@@ -238,9 +239,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - окружность</returns>
-        public static EntityParser.ProxyEntity newCircle(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newCircle(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity (new Circle());
             // значения для параметров примитива
@@ -278,9 +279,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - дуга</returns>
-        public static EntityParser.ProxyEntity newArc(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newArc(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity (new Arc());
             // значения для параметров примитива
@@ -316,7 +317,7 @@ namespace Autodesk.Cad.Crushner.Core
             return pEntityRes;
         }
 
-        public static object[] boxToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] boxToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -332,7 +333,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] coneToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] coneToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -370,7 +371,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] polyLine3dToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] polyLine3dToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -404,7 +405,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] circleToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] circleToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -438,7 +439,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] arcToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] arcToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 

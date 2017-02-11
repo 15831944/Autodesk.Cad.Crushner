@@ -6,28 +6,26 @@ using System.Linq;
 using System.Text;
 
 using Autodesk.AutoCAD.Interop.Common;
+using static Autodesk.Cad.Crushner.Settings.Collection;
 
 namespace Autodesk.Cad.Crushner.Core
 {
     /// <summary>
-    /// Перечисление - типы примитивов
-    /// </summary>
-    public enum COMMAND_ENTITY : short
-    {
-        UNKNOWN = -1
-        , CIRCLE, ARC, LINE, PLINE3, CONE, BOX
-        , ALINE_X, ALINE_Y, ALINE_Z, RLINE_X, RLINE_Y, RLINE_Z
-            , COUNT
-    }
-    /// <summary>
-    /// Уникалбный идентификатор примитива на чертеже
+    /// Уникальный идентификатор примитива на чертеже
     /// </summary>
     public struct KEY_ENTITY
     {
+        /// <summary>
+        /// Разделитель в наименовании сущности (тип-индекс)
+        /// </summary>
         private static Char s_chNameDelimeter = '-';
-
+        /// <summary>
+        /// Часть команды для создания сущности
+        /// </summary>
         public COMMAND_ENTITY m_command;
-
+        /// <summary>
+        /// Индекс сущности - номер в наименовании, уникальный в пределах блока
+        /// </summary>
         public int m_index;
         /// <summary>
         /// Уникальное наименование со специальной сигнатурой (состоит из 2-х частей)
@@ -49,13 +47,23 @@ namespace Autodesk.Cad.Crushner.Core
         /// Тип объекта
         /// </summary>
         public Type m_type;
-
+        /// <summary>
+        /// Наименование метода для создания сущности
+        /// </summary>
         public string m_nameCreateMethod;
-
+        /// <summary>
+        /// Наименование типа сложного объекта
+        /// </summary>
         public string m_nameSolidType;
-
+        /// <summary>
+        /// Наименование блока, к которому принадлежит сущность
+        /// </summary>
         public string m_BlockName;
-
+        /// <summary>
+        /// Конструктор - основной (с параметрами)
+        /// </summary>
+        /// <param name="blockName">Наименование блока-владельца</param>
+        /// <param name="name">Наименование сущности</param>
         public KEY_ENTITY(string blockName, string name)
         {
             string[] names = name.Split(s_chNameDelimeter);
@@ -76,7 +84,15 @@ namespace Autodesk.Cad.Crushner.Core
                 m_BlockName = string.Empty;
             }
         }
-
+        /// <summary>
+        /// Конструктор - основной (с парметрами)
+        /// </summary>
+        /// <param name="type">Тип сущности</param>
+        /// <param name="nameSolidType">Наименование сложного типа(при необходимости)</param>
+        /// <param name="nameCreateMethod">Наименование метода для создания сущности</param>
+        /// <param name="command">Часть команды для создания сущности</param>
+        /// <param name="blockName">Наименование блока-владельца</param>
+        /// <param name="indx">Индекс сущности - номер в наименовании, уникальный в пределах блока</param>
         public KEY_ENTITY(Type type, string nameSolidType, string nameCreateMethod, COMMAND_ENTITY command, string blockName, int indx)
         {
             m_nameCreateMethod = nameCreateMethod;
@@ -93,21 +109,35 @@ namespace Autodesk.Cad.Crushner.Core
 
             m_index = indx;
         }
-
+        /// <summary>
+        /// Оператор срвнения
+        /// </summary>
+        /// <param name="o1">Объект №1 (слева от операнда) для сравнения</param>
+        /// <param name="o2">Объект №2 (справа от операнда) для сравнения</param>
+        /// <returns>Результат сравнения</returns>
         public static bool operator==(KEY_ENTITY o1, KEY_ENTITY o2)
         {
             return (o1.m_command.Equals(o2.m_command) == true)
                 && (o1.m_index.Equals(o2.m_index) == true)
                 && (o1.m_type.Equals(o2.m_type) == true);
         }
-
+        /// <summary>
+        /// Оператор срвнения
+        /// </summary>
+        /// <param name="o1">Объект №1 (слева от операнда) для сравнения</param>
+        /// <param name="o2">Объект №2 (справа от операнда) для сравнения</param>
+        /// <returns>Результат сравнения</returns>
         public static bool operator !=(KEY_ENTITY o1, KEY_ENTITY o2)
         {
             return (o1.m_command.Equals(o2.m_command) == false)
                 || (o1.m_index.Equals(o2.m_index) == false)
                 || (o1.m_type.Equals(o2.m_type) == false);
         }
-
+        /// <summary>
+        /// Метод для сравнения текущего объекта с объектом, указанным в аргументе
+        /// </summary>
+        /// <param name="obj">Объект для сравнения</param>
+        /// <returns>Результат сравнения</returns>
         public override bool Equals(object obj)
         {
             return this == (KEY_ENTITY)obj;
@@ -182,7 +212,9 @@ namespace Autodesk.Cad.Crushner.Core
 
             return typeRes;
         }
-
+        /// <summary>
+        /// Словарь с определениями блоков
+        /// </summary>
         public static MSExcel.DictionaryBlock s_dictBlock = new MSExcel.DictionaryBlock();
 
         public static void Clear()
@@ -190,5 +222,4 @@ namespace Autodesk.Cad.Crushner.Core
             s_dictBlock?.Clear();
         }
     }
-
 }

@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dawager", "Dawager\Dawager.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "Settings\Settings.csproj", "{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "Logging\Logging.csproj", "{F841F198-18F7-4E42-AAFC-300F28E50F6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,14 @@ Global
 		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|x64.ActiveCfg = Release|Any CPU
 		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|x64.Build.0 = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|x64.Build.0 = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|x64.ActiveCfg = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

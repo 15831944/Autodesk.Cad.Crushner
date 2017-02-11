@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Autodesk.Cad.Crushner.Core
 {
-    partial class EntityParser
+    partial class EntityCtor
     {
         /// <summary>
         /// Создать новый примитив - линия по значениям параметров из строки таблицы
@@ -19,9 +19,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityParser.ProxyEntity newLine(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newLine(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity (new Line());
             // значения для параметров примитива
@@ -65,9 +65,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityParser.ProxyEntity newALineX(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newALineX(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
@@ -98,9 +98,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityParser.ProxyEntity newALineY(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newALineY(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
@@ -131,9 +131,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityParser.ProxyEntity newALineZ(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newALineZ(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
@@ -164,9 +164,9 @@ namespace Autodesk.Cad.Crushner.Core
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityParser.ProxyEntity newRLineX(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newRLineX(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             string nameEntityRelative = string.Empty;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
@@ -189,9 +189,9 @@ namespace Autodesk.Cad.Crushner.Core
             return pEntityRes;
         }
 
-        public static EntityParser.ProxyEntity newRLineY(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newRLineY(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             string nameEntityRelative = string.Empty;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
@@ -214,9 +214,9 @@ namespace Autodesk.Cad.Crushner.Core
             return pEntityRes;
         }
 
-        public static EntityParser.ProxyEntity newRLineZ(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newRLineZ(DataRow rEntity, MSExcel.FORMAT format/*, string blockName*/)
         {
-            EntityParser.ProxyEntity pEntityRes;
+            EntityCtor.ProxyEntity pEntityRes;
             string nameEntityRelative = string.Empty;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
@@ -239,7 +239,7 @@ namespace Autodesk.Cad.Crushner.Core
             return pEntityRes;
         }
 
-        public static object[] lineToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] lineToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -277,7 +277,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] alineXToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] alineXToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -292,7 +292,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] alineYToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] alineYToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -307,7 +307,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] alineZToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] alineZToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -322,7 +322,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] rlineXToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] rlineXToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -337,7 +337,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] rlineYToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] rlineYToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 
@@ -352,7 +352,7 @@ namespace Autodesk.Cad.Crushner.Core
             return rowRes;
         }
 
-        public static object[] rlineZToDataRow(KeyValuePair<KEY_ENTITY, EntityParser.ProxyEntity> pair, MSExcel.FORMAT format)
+        public static object[] rlineZToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair, MSExcel.FORMAT format)
         {
             object[] rowRes = null;
 

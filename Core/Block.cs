@@ -35,18 +35,18 @@ namespace Autodesk.Cad.Crushner.Core
 
             public List<PLACEMENT> m_ListReference;
 
-            public Dictionary<KEY_ENTITY, EntityParser.ProxyEntity> m_dictEntity;
+            public Dictionary<KEY_ENTITY, EntityCtor.ProxyEntity> m_dictEntity;
 
             public BLOCK()
             {
-                m_dictEntity = new Dictionary<KEY_ENTITY, EntityParser.ProxyEntity>();
+                m_dictEntity = new Dictionary<KEY_ENTITY, EntityCtor.ProxyEntity>();
             }
 
             public BLOCK(ExcelWorksheet ews) : this()
             {
             }
 
-            public void Add(EntityParser.ProxyEntity pEntity)
+            public void Add(EntityCtor.ProxyEntity pEntity)
             {
                 m_dictEntity.Add(GetKeyEntity(
                         pEntity.m_entity
@@ -124,7 +124,7 @@ namespace Autodesk.Cad.Crushner.Core
                     ; // ошибка добавления ссылки на блок
             }
 
-            public void AddEntity(string blockName, string name, EntityParser.ProxyEntity pEntity)
+            public void AddEntity(string blockName, string name, EntityCtor.ProxyEntity pEntity)
             {
                 if (this.ContainsKey(blockName) == false)
                     this.Add(blockName, new BLOCK());
@@ -138,7 +138,7 @@ namespace Autodesk.Cad.Crushner.Core
             /// </summary>
             /// <param name="pEntity">Примитив для добавления</param>
             /// <return>Признак наличия примитива в составе блока</return>
-            public bool AddToExport(EntityParser.ProxyEntity pEntity)
+            public bool AddToExport(EntityCtor.ProxyEntity pEntity)
             {
                 bool bRes = this[pEntity.m_entity.BlockName].m_dictEntity.Values.Contains(pEntity);
 
@@ -155,7 +155,7 @@ namespace Autodesk.Cad.Crushner.Core
                 return bRes;
             }
 
-            public KEY_ENTITY GetKeyEntity(EntityParser.ProxyEntity pEntity)
+            public KEY_ENTITY GetKeyEntity(EntityCtor.ProxyEntity pEntity)
             {
                 return this[pEntity.m_entity.BlockName].m_dictEntity.FirstOrDefault(x => (x.Value.m_entity as DBObject).ObjectId == (pEntity.m_entity as DBObject).ObjectId).Key;
             }

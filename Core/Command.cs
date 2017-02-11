@@ -81,7 +81,7 @@ namespace Autodesk.Cad.Crushner.Command
                 MSExcel.Clear();
                 clear();
 
-                MSExcel.Import(@"settings.xls", MSExcel.FORMAT.HEAP);
+                MSExcel.Import(@"settings.xls", Settings.MSExcel.FORMAT.HEAP);
 
                 flash();
             } catch (System.Exception e) {

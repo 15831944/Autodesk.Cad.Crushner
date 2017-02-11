@@ -7,8 +7,8 @@
     <ProjectGuid>{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autodesk.Cad.Crushner.Core</RootNamespace>
-    <AssemblyName>Autodesk.Cad.Crushner.Core</AssemblyName>
+    <RootNamespace>Autodesk.Cad.Crushner.Assignment</RootNamespace>
+    <AssemblyName>Autodesk.Cad.Crushner.Assignment</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Debug\Autodesk.Cad.Crushner.Core.XML</DocumentationFile>
+    <DocumentationFile>..\bin\Debug\Autodesk.Cad.Crushner.Assignment.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,9 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assignment.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Command.cs" />
-    <Compile Include="Core.cs" />
     <Compile Include="EntityCtor.cs" />
     <Compile Include="EntityKey.cs" />
     <Compile Include="EntityParserLine.cs" />

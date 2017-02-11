@@ -18,7 +18,7 @@ using Autodesk.AutoCAD.Interop.Common;
 //using AppService = Autodesk.AutoCAD.ApplicationServices;
 //using RunTime = Autodesk.AutoCAD.Runtime;
 
-namespace Autodesk.Cad.Crushner.Core
+namespace Autodesk.Cad.Crushner.Assignment
 {
     public abstract class Command : IExtensionApplication
     {

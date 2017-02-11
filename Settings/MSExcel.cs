@@ -82,9 +82,16 @@ namespace Autodesk.Cad.Crushner.Settings
         /// <returns></returns>
         private static string getFullNameSettingsExcelFile(string strNameSettingsExcelFile = @"")
         {
+            //var assembly = Assembly.GetAssembly(typeof(MSExcel));
+            //var assemblyFileUri = new Uri(assembly.CodeBase);
+            //var path = assemblyFileUri.LocalPath;
+
             return string.Format(@"{0}\{1}"
                 //, AppDomain.CurrentDomain.BaseDirectory
-                , Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                , Path.GetDirectoryName(
+                    Assembly.GetExecutingAssembly().Location
+                    //assemblyFileUri.LocalPath
+                )
                 , strNameSettingsExcelFile.Equals(string.Empty) == false ?
                     strNameSettingsExcelFile :
                         s_nameSettings);
@@ -166,7 +173,7 @@ namespace Autodesk.Cad.Crushner.Settings
                 ExcelFile ef = new ExcelFile();
                 ef.LoadXls(strNameSettings, XlsOptions.None);
 
-                Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Книга открыта, листов = {0}", ef.Worksheets.Count));
+                Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Книга открыта {0}, листов = {1}", strNameSettings, ef.Worksheets.Count));
 
                 iErr = import(ef, format);
             } catch (Exception e) {

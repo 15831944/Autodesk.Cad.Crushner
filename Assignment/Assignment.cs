@@ -45,7 +45,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         public virtual void Initialize()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod());
+            Logging.AcEditorDebugCaller(MethodBase.GetCurrentMethod());
 
             s_acTemplateDocumentName = @"acad3d.dwt";
 
@@ -64,7 +64,7 @@ namespace Autodesk.Cad.Crushner.Assignment
 
         protected virtual void reinitialize()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod());
+            Logging.AcEditorDebugCaller(MethodBase.GetCurrentMethod());
 
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
             DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
@@ -81,7 +81,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         public void Terminate()
         {
-            Logging.DebugCaller(MethodBase.GetCurrentMethod());
+            Logging.AcEditorDebugCaller(MethodBase.GetCurrentMethod());
         }
         #endregion
 
@@ -187,7 +187,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         {
             DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
 
-            Logging.DebugCaller(MethodBase.GetCurrentMethod());
+            Logging.AcEditorDebugCaller(MethodBase.GetCurrentMethod());
 
             //Добавить обработчик события - документ создан
             //acDocMgr.DocumentCreated += new DocumentCollectionEventHandler(AcDocMgr_DocumentCreated);
@@ -465,14 +465,14 @@ namespace Autodesk.Cad.Crushner.Assignment
                         btrCurrent = trCurrent.GetObject(dbCurrent.CurrentSpaceId
                             , OpenMode.ForWrite) as BlockTableRecord;
 
-                    foreach (KEY_ENTITY key in MSExcel.s_dictBlock[blockName].m_dictEntity.Keys) {
-                        if (MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity.Id.IsValid == false) {
-                            oidEntity = btrCurrent.AppendEntity(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity);
-                            trCurrent.AddNewlyCreatedDBObject(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity as DBObject, true);
+                    foreach (KEY_ENTITY key in MSExcel.GetBlock(blockName).m_dictEntityCtor.Keys) {
+                        if (MSExcel.GetEntityCtor(blockName, key).m_entity.Id.IsValid == false) {
+                            oidEntity = btrCurrent.AppendEntity(MSExcel.GetEntityCtor(blockName, key).m_entity);
+                            trCurrent.AddNewlyCreatedDBObject(MSExcel.GetEntityCtor(blockName, key).m_entity as DBObject, true);
 
-                            if (!(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_ptDisplacement == Point3d.Origin))
-                                MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity.TransformBy(
-                                    Matrix3d.Displacement(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_ptDisplacement - Point3d.Origin)
+                            if (!(MSExcel.GetEntityCtor(blockName, key).m_ptDisplacement == Point3d.Origin))
+                                MSExcel.GetEntityCtor(blockName, key).m_entity.TransformBy(
+                                    Matrix3d.Displacement(MSExcel.GetEntityCtor(blockName, key).m_ptDisplacement - Point3d.Origin)
                                 );
                             else
                                 ;
@@ -507,7 +507,7 @@ namespace Autodesk.Cad.Crushner.Assignment
             //Entity entityTransformCopy;
 
             string message = string.Format(@"Добавление примитива {0}, имя={1}..."
-                , MSExcel.s_dictBlock[blockName].m_dictEntity[key].GetType().Name
+                , MSExcel.GetEntityCtor(blockName, key).GetType().Name
                 , key.Name);
 
             try {
@@ -537,12 +537,12 @@ namespace Autodesk.Cad.Crushner.Assignment
                         btrCurrent = trCurrent.GetObject(dbCurrent.CurrentSpaceId
                             , OpenMode.ForWrite) as BlockTableRecord;
 
-                    oidEntity = btrCurrent.AppendEntity(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity);
-                    trCurrent.AddNewlyCreatedDBObject(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity as DBObject, true);
+                    oidEntity = btrCurrent.AppendEntity(MSExcel.GetEntityCtor(blockName, key).m_entity);
+                    trCurrent.AddNewlyCreatedDBObject(MSExcel.GetEntityCtor(blockName, key).m_entity as DBObject, true);
 
-                    if (!(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_ptDisplacement == Point3d.Origin))
-                        MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_entity.TransformBy(
-                            Matrix3d.Displacement(MSExcel.s_dictBlock[blockName].m_dictEntity[key].m_ptDisplacement - Point3d.Origin)
+                    if (!(MSExcel.GetEntityCtor(blockName, key).m_ptDisplacement == Point3d.Origin))
+                        MSExcel.GetEntityCtor(blockName, key).m_entity.TransformBy(
+                            Matrix3d.Displacement(MSExcel.GetEntityCtor(blockName, key).m_ptDisplacement - Point3d.Origin)
                         );
                     else
                         ;
@@ -595,9 +595,9 @@ namespace Autodesk.Cad.Crushner.Assignment
                         btrCurrent = trCurrent.GetObject(btCurrSpace[blockName]
                             , OpenMode.ForWrite) as BlockTableRecord;
 
-                        foreach (MSExcel.BLOCK.PLACEMENT place in MSExcel.s_dictBlock[blockName].m_ListReference) {
+                        foreach (Settings.MSExcel.BLOCK.PLACEMENT place in Settings.MSExcel.s_dictBlock[blockName].m_ListReference) {
                             // создаем новое вхождение блока, используя ранее сохраненный ID определения блока
-                            br = new BlockReference(place.m_point3d, btrCurrent.Id);
+                            br = new BlockReference(new Point3d(place.Values), btrCurrent.Id);
                             // добавляем созданное вхождение блока на пространство модели и в транзакцию
                             ms.AppendEntity(br);
                             trCurrent.AddNewlyCreatedDBObject(br, true);
@@ -615,7 +615,7 @@ namespace Autodesk.Cad.Crushner.Assignment
             }
         }
 
-        protected void referenceBlockAdd(string blockName, MSExcel.BLOCK.PLACEMENT place)
+        protected void referenceBlockAdd(string blockName, Settings.MSExcel.BLOCK.PLACEMENT place)
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
             BlockTable btCurrSpace;
@@ -666,10 +666,7 @@ namespace Autodesk.Cad.Crushner.Assignment
                     referencesBlockAdd(blockName);
                 }
             } else {
-                Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
-                DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
-                Document acDoc = acDocMgr.GetDocument(dbCurrent);
-                acDoc.Editor.WriteMessage(string.Format(@"{0}Команда ИМПОРТ не выполнена либо нет объектов...", Environment.NewLine));
+                Logging.AcEditorWriteMessage(@"Команда ИМПОРТ не выполнена либо нет объектов...");
             }
         }
         #endregion

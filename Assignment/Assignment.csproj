@@ -60,11 +60,10 @@
     <Compile Include="Block.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="EntityCtor.cs" />
+    <Compile Include="EntityCtorLine.cs" />
     <Compile Include="EntityKey.cs" />
-    <Compile Include="EntityParserLine.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MSExcel.cs" />
-    <Compile Include="ProgramBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +101,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Logging\Logging.csproj">
+    <ProjectReference Include="..\Core\Core.csproj">
       <Project>{f841f198-18f7-4e42-aafc-300f28e50f6b}</Project>
-      <Name>Logging</Name>
+      <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Settings\Settings.csproj">
       <Project>{94b4bc26-adb0-4b37-a5ca-0d3f56823356}</Project>

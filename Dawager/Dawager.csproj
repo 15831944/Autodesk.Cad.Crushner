@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>appicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,9 +80,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{9cfb137b-0ee5-4a64-a125-0ef8ca2a7232}</Project>
+      <Project>{f841f198-18f7-4e42-aafc-300f28e50f6b}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.csproj">
+      <Project>{94b4bc26-adb0-4b37-a5ca-0d3f56823356}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="appicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,10 +7,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Autodesk.Cad.Crushner.Core
+namespace Autodesk.Cad.Crushner.Assignment
 {
-    public class Logging : Core.Logging.Logging
+    public class Logging : Core.Logging
     {
+        private Logging() : base() { }
+
+        protected override Core.Logging create() { return new Assignment.Logging() as Core.Logging; }
+
         private static String m_logFileName = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
             , @"acad-2013-test.log");
@@ -29,7 +33,12 @@ namespace Autodesk.Cad.Crushner.Core
             AcEditorWriteMessage(string.Format(@"{1}{0}{2}{0}{3}", Environment.NewLine, msg, e.Message, e.StackTrace));
         }
 
-        public static void DebugCaller(MethodBase methodBase, string message)
+        public static void AcEditorDebugCaller(MethodBase methodBase)
+        {
+            DebugCaller(methodBase, string.Empty);
+        }
+
+        public static void AcEditorDebugCaller(MethodBase methodBase, string message)
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
             DocumentCollection acDocMgr = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;

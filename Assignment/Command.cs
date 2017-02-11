@@ -12,11 +12,11 @@ using Autodesk.AutoCAD.Geometry;
 using System.IO;
 using System.Reflection;
 
-using Autodesk.Cad.Crushner.Core;
+using Autodesk.Cad.Crushner.Assignment;
 
 namespace Autodesk.Cad.Crushner.Command
 {
-    public class Command : Core.Command
+    public class Command : Assignment.Command
     {
         #region Обязательные методы плюгина
         /// <summary>
@@ -60,7 +60,14 @@ namespace Autodesk.Cad.Crushner.Command
             Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Выполняется команда: {0} - перенаправление CRU-IMPORT", command));
 
             try {
-                Application.DocumentManager.MdiActiveDocument.SendStringToExecute(@"CRU-IMPORT ", true, true, true);
+                // !!! 2013
+                Application.DocumentManager.MdiActiveDocument.SendStringToExecute(@"CRU-IMPORT ", true, false, true);
+                // ??? 2014
+                //Application.DocumentManager.MdiActiveDocument.Editor.Command(new object[] { @"CRU-IMPORT" });
+            } catch (AutoCAD.Runtime.Exception e) {
+                Logging.AcEditorWriteException(e, command);
+
+                Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
             } catch (System.Exception e) {
                 Logging.AcEditorWriteException(e, command);
 

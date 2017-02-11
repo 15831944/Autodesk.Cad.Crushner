@@ -1,30 +1,31 @@
-﻿using GemBox.Spreadsheet;
+﻿using Autodesk.Cad.Crushner.Core;
+using GemBox.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Autodesk.Cad.Crushner.Settings
 {
-    /// <summary>
-    /// Базовый класс - коллекция для хранения данных из файла конфигурации
-    /// </summary>
-    public class Collection
+    public partial class MSExcel
     {
         /// <summary>
         /// Перечисление - типы примитивов(сущностей)
         /// </summary>
         public enum COMMAND_ENTITY : short
         {
-            UNKNOWN = -1
-            , CIRCLE, ARC, LINE, PLINE3, CONE, BOX
+            UNKNOWN = 0
+            , CIRCLE, ARC, LINE/*, PLINE3*/, CONE, BOX
             , ALINE_X, ALINE_Y, ALINE_Z, RLINE_X, RLINE_Y, RLINE_Z
                 , COUNT
         }
-
+        /// <summary>
+        /// Индекс столбца на листе книги MSExcel с которого начинаются значения свойств сущностей для отображения
+        /// </summary>
         public const int _HEAP_INDEX_COLUMN_PROPERTY = 2;
         /// <summary>
         /// Перечисление - индексы столбцов на листе книги MS Excel в формате 'HEAP'
@@ -41,10 +42,6 @@ namespace Autodesk.Cad.Crushner.Settings
             , RLINE_NAME_ENTITY_RELATIVE = _HEAP_INDEX_COLUMN_PROPERTY, RLINE_LENGTH, RLINE_COLORINDEX, RLINE_TICKNESS
             ,
         }
-    }
-
-    public class MSExcel
-    {
         /// <summary>
         /// Известные форматы книги MS Excel
         /// </summary>
@@ -60,6 +57,24 @@ namespace Autodesk.Cad.Crushner.Settings
         /// Наименование книги MS Excel со списком объектов по умолчанию
         /// </summary>
         private static string s_nameSettings = @"settings.xls";
+
+        private delegate EntityParser.ProxyEntity delegateNewEntity(DataRow rEntity, FORMAT format/*, string blockName*/);
+
+        private static Dictionary<COMMAND_ENTITY, delegateNewEntity> dictDelegateNewProxyEntity = new Dictionary<COMMAND_ENTITY, delegateNewEntity>() {
+            { COMMAND_ENTITY.ARC, EntityParser.newArc }
+            , { COMMAND_ENTITY.CIRCLE, EntityParser.newCircle }
+            , { COMMAND_ENTITY.LINE, EntityParser.newLine }
+            //, { COMMAND_ENTITY.PLINE3, EntityParser.newPolyLine3d }
+            , { COMMAND_ENTITY.BOX, EntityParser.newBox }
+            , { COMMAND_ENTITY.CONE, EntityParser.newCone }
+            // аекторы - линиии
+            , { COMMAND_ENTITY.ALINE_X, EntityParser.newALineX }
+            , { COMMAND_ENTITY.ALINE_Y, EntityParser.newALineY }
+            , { COMMAND_ENTITY.ALINE_Z, EntityParser.newALineZ }
+            , { COMMAND_ENTITY.RLINE_X, EntityParser.newRLineX }
+            , { COMMAND_ENTITY.RLINE_Y, EntityParser.newRLineY }
+            , { COMMAND_ENTITY.RLINE_Z, EntityParser.newRLineZ }
+        };
         /// <summary>
         /// Возвратить полное путь с именем файла (книги MS Excel) конфигурации
         /// </summary>
@@ -122,6 +137,10 @@ namespace Autodesk.Cad.Crushner.Settings
             } else
                 ;
         }
+        /// <summary>
+        /// Словарь с определениями блоков
+        /// </summary>
+        public static MSExcel.DictionaryBlock s_dictBlock = new MSExcel.DictionaryBlock();
 
         private static string WSHHEET_NAME_CONFIG = @"_CONFIG";
 
@@ -129,10 +148,12 @@ namespace Autodesk.Cad.Crushner.Settings
         /// <summary>
         /// Импортировать список объектов
         /// </summary>
-        /// <returns>Список объектов</returns>
+        /// <param name="strNameSettingsExcelFile">Наименование файла конфигурации (книги MS Excel)</param>>
+        /// /// <param name="format">Формат файла конфигурации (книги MS Excel)</param>>
+        /// <returns>Признак ошибки при выполнении метода</returns>
         public static int Import(string strNameSettingsExcelFile = @"", Settings.MSExcel.FORMAT format = Settings.MSExcel.FORMAT.ORDER)
         {
-            int iErr = Settings.MSExcel.Import();
+            int iErr = 0;
 
             string strNameSettings = getFullNameSettingsExcelFile(strNameSettingsExcelFile);
 
@@ -145,15 +166,13 @@ namespace Autodesk.Cad.Crushner.Settings
                 ExcelFile ef = new ExcelFile();
                 ef.LoadXls(strNameSettings, XlsOptions.None);
 
-                Logging.AcEditorWriteMessage(string.Format(@"Книга открыта, листов = {0}", ef.Worksheets.Count));
+                Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Книга открыта, листов = {0}", ef.Worksheets.Count));
 
                 iErr = import(ef, format);
             } catch (Exception e) {
                 iErr = -1;
 
                 Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
-
-                Logging.AcEditorWriteException(e, strNameSettings);
             }
 
             return iErr;
@@ -170,8 +189,8 @@ namespace Autodesk.Cad.Crushner.Settings
 
             GemBox.Spreadsheet.CellRange range;
             EntityParser.ProxyEntity? pEntity;
-            COMMAND_ENTITY commandEntity = COMMAND_ENTITY.UNKNOWN;
             string nameEntity = string.Empty;
+            COMMAND_ENTITY commandEntity = COMMAND_ENTITY.UNKNOWN;
 
             foreach (ExcelWorksheet ews in ef.Worksheets) {
                 if (ews.Name.Equals(WSHHEET_NAME_CONFIG) == false) {
@@ -180,7 +199,7 @@ namespace Autodesk.Cad.Crushner.Settings
                         //getUsedCellRange(ews, format)
                         ;
 
-                    Logging.AcEditorWriteMessage(string.Format(@"Обработка листа с имененм = {0}", ews.Name));
+                    Core.Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Обработка листа с имененм = {0}", ews.Name));
 
                     if ((!(range == null))
                         && ((range.LastRowIndex + 1)  > 0)) {
@@ -193,12 +212,12 @@ namespace Autodesk.Cad.Crushner.Settings
                                 break;
                             default:
                                 foreach (DataRow rEntity in _dictDataTableOfExcelWorksheet[ews.Name].Rows) {
-                                    if (dictDelegateTryParseCommandAndNameEntity[format](ews, rEntity, out commandEntity, out nameEntity) == true) {
+                                    if (EntityParser.TryParseCommandAndNameEntity(format, rEntity, out nameEntity, out commandEntity) == true) {
                                         pEntity = null;
 
                                         // соэдать примитив 
-                                        if (dictDelegateMethodeEntity.ContainsKey(commandEntity) == true)
-                                            pEntity = dictDelegateMethodeEntity[commandEntity].newEntity(rEntity, format/*, ews.Name*/);
+                                        if (dictDelegateNewProxyEntity.ContainsKey(commandEntity) == true)
+                                            pEntity = dictDelegateNewProxyEntity[commandEntity](rEntity, format/*, ews.Name*/);
                                         else
                                             ;
 
@@ -209,15 +228,16 @@ namespace Autodesk.Cad.Crushner.Settings
                                                 , pEntity.GetValueOrDefault()
                                             );
                                         else
-                                            Logging.AcEditorWriteMessage(string.Format(@"Элемент с именем {0} пропущен..."
+                                            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Элемент с именем {0} пропущен..."
                                                 , nameEntity
                                             ));
                                     } else
                                     // ошибка при получении типа и наименования примитива
-                                        ;
+                                        Core.Logging.DebugCaller(MethodBase.GetCurrentMethod()
+                                            , string.Format(@"Ошибка опрделения имени, типа  сущности лист={0}, строка={1}...", ews.Name, _dictDataTableOfExcelWorksheet[ews.Name].Rows.IndexOf(rEntity)));
                                 } // цикл по строкам таблицы для листа книги MS Excel
 
-                                Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} обработано строк = {1}, добавлено элементов {2}"
+                                Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"На листе с имененм = {0} обработано строк = {1}, добавлено элементов {2}"
                                     , ews.Name
                                     , range.LastRowIndex + 1
                                     , _dictDataTableOfExcelWorksheet[ews.Name].Rows.Count
@@ -227,7 +247,7 @@ namespace Autodesk.Cad.Crushner.Settings
                     
                     } else
                     // нет строк с данными
-                        Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} нет строк для распознования", ews.Name));
+                        Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"На листе с имененм = {0} нет строк для распознования", ews.Name));
                 } else
                     ; // страница(лист) с конфигурацией 
             }
@@ -278,12 +298,10 @@ namespace Autodesk.Cad.Crushner.Settings
                     , ews.Columns[range.FirstColumnIndex]
                 );
             } catch (Exception e) {
-                Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
-
-                Logging.AcEditorWriteException(e, string.Format(@"Лист MS Excel: {0}", ews.Name));
+                Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e, string.Format(@"Лист MS Excel: {0}", ews.Name));
             }
 
-            Logging.AcEditorWriteMessage(string.Format(@"На листе с имененм = {0} полей = {1}", ews.Name, range.LastColumnIndex + 1));
+            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"На листе с имененм = {0} полей = {1}", ews.Name, range.LastColumnIndex + 1));
 
             //// добавить записи в таблицу
             //for (i = range.FirstRowIndex + 1; !(i > range.LastRowIndex); i++) {
@@ -410,7 +428,7 @@ namespace Autodesk.Cad.Crushner.Settings
                     foreach (ExcelWorksheet ews in ef.Worksheets) {
                         GemBox.Spreadsheet.CellRange range = ews.GetUsedCellRange();
 
-                        Logging.AcEditorWriteMessage(string.Format(@"{0}Очистка листа с имененм = {1}", Environment.NewLine, ews.Name));
+                        Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Очистка листа с имененм = {1}", Environment.NewLine, ews.Name));
 
                         if ((range.LastRowIndex + 1) > 0) {
                             // создать структуру таблицы - добавить поля в таблицу, при необходимости создать таблицу
@@ -432,9 +450,9 @@ namespace Autodesk.Cad.Crushner.Settings
 
                     ef.SaveXls(strNameSettings);
                 } else
-                    Logging.AcEditorWriteMessage(string.Format(@"{0}Очистка книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
+                    Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Очистка книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
             } catch (Exception e) {
-                Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
+                Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
         }
         /// <summary>
@@ -457,7 +475,7 @@ namespace Autodesk.Cad.Crushner.Settings
                     foreach (ExcelWorksheet ews in ef.Worksheets) {
                         GemBox.Spreadsheet.CellRange range = ews.GetUsedCellRange();
 
-                        Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение листа с имененм = {1}", Environment.NewLine, ews.Name));
+                        Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Сохранение листа с имененм = {1}", Environment.NewLine, ews.Name));
 
                         try {
                             ews.InsertDataTable(_dictDataTableOfExcelWorksheet[ews.Name]
@@ -475,16 +493,21 @@ namespace Autodesk.Cad.Crushner.Settings
                             //} else
                             //    ;
                         } catch (Exception e) {
-                            Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение книги с имененм = {1}, лист = {2} невозможна", Environment.NewLine, strNameSettings, ews.Name));
+                            Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Сохранение книги с имененм = {1}, лист = {2} невозможна", Environment.NewLine, strNameSettings, ews.Name));
                         }
                     }
 
                     ef.SaveXls(strNameSettings);
                 } else
-                    Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
+                    Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Сохранение книги с имененм = {1} невозможна", Environment.NewLine, strNameSettings));
             } catch (Exception e) {
-                Logging.AcEditorWriteMessage(string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
+                Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"{0}Сохранение MSExcel-книги исключение: {1}{0}{2}", Environment.NewLine, e.Message, e.StackTrace));
             }
+        }
+
+        public static void Clear()
+        {
+            s_dictBlock?.Clear();
         }
 
         #region ??? Export - не реализован

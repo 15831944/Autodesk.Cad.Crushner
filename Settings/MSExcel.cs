@@ -19,7 +19,7 @@ namespace Autodesk.Cad.Crushner.Settings
         public enum COMMAND_ENTITY : short
         {
             UNKNOWN = 0
-            , CIRCLE, ARC, LINE/*, PLINE3*/, CONE, BOX
+            , CIRCLE, ARC, LINE, PLINE3, CONE, BOX
             , ALINE_X, ALINE_Y, ALINE_Z, RLINE_X, RLINE_Y, RLINE_Z
                 , COUNT
         }
@@ -64,7 +64,7 @@ namespace Autodesk.Cad.Crushner.Settings
             { COMMAND_ENTITY.ARC, EntityParser.newArc }
             , { COMMAND_ENTITY.CIRCLE, EntityParser.newCircle }
             , { COMMAND_ENTITY.LINE, EntityParser.newLine }
-            //, { COMMAND_ENTITY.PLINE3, EntityParser.newPolyLine3d }
+            , { COMMAND_ENTITY.PLINE3, EntityParser.newPolyLine3d }
             , { COMMAND_ENTITY.BOX, EntityParser.newBox }
             , { COMMAND_ENTITY.CONE, EntityParser.newCone }
             // аекторы - линиии

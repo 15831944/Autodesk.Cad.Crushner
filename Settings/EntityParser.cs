@@ -280,8 +280,10 @@ namespace Autodesk.Cad.Crushner.Settings
                                 name
                                 , command
                                 , new ProxyEntity.Property[] {
-                                    new ProxyEntity.Property (pnts.Count
-                                        , pnts)
+                                    new ProxyEntity.Property (
+                                        pnts.Count
+                                        , pnts
+                                    )
                                 }
                             );
 

@@ -153,53 +153,54 @@ namespace Autodesk.Cad.Crushner.Assignment
                 , j = -1; // счетчие вершин в цикле
             double[] point3d = new double[3];
             Point3dCollection pnts = new Point3dCollection() {};
+            PolylineVertex3d vex3d;
 
             MSExcel.MAP_KEY_ENTITY mapKeyEntity =
                 MSExcel.s_MappingKeyEntity.Find(item => {
                     return item.m_command.Equals(entity.m_command) == true;
                 });
-            ConstructorInfo coneCtor = mapKeyEntity.m_type.GetConstructor(new Type[] {
-                typeof(Poly3dType)
-                , typeof(Point3dCollection)
-                , typeof(bool)
-            });
+            ConstructorInfo pline3dCtor = mapKeyEntity.m_type.GetConstructor (
+                new Type[] {
+                    // вариант №1
+                    typeof(Poly3dType)
+                    , typeof(Point3dCollection)
+                    , typeof(bool)
+                    //// вариант №2
+                    //
+                }
+            );
 
             pEntityRes = new ProxyEntity();
             pEntityRes.m_entity = null;
             pEntityRes.m_ptDisplacement = Point3d.Origin;
 
-            //// ??? значения для параметров примитива
-            //cntVertex = ((rEntity.Table.Columns.Count - (int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START)
-            //    - (rEntity.Table.Columns.Count - (int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START) % 3) / 3;
-
-            //for (j = 0; j < cntVertex; j ++) {
-            //    if ((!(rEntity[j * 3 + ((int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)] is DBNull))
-            //        && (!(rEntity[j * 3 + ((int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)] is DBNull))
-            //        && (!(rEntity[j * 3 + ((int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)] is DBNull)))
-            //        if ((double.TryParse((string)rEntity[j * 3 + ((int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START + 0)], out point3d[0]) == true)
-            //            && (double.TryParse((string)rEntity[j * 3 + ((int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START + 1)], out point3d[1]) == true)
-            //            && (double.TryParse((string)rEntity[j * 3 + ((int)Settings.MSExcel.HEAP_INDEX_COLUMN.POLYLINE_X_START + 2)], out point3d[2]) == true))
-            //            pnts.Add(new Point3d(point3d));
-            //        else
-            //            break;
-            //    else
-            //        break;
-            //}
+            // ??? значения для параметров примитива
+            cntVertex = entity.Properties[0].Index;
+            foreach (double[]pt3d in entity.Properties[0].Value as List<double[]>)
+                pnts.Add(new Point3d (pt3d));
 
             if (pnts.Count > 2) {
             // соэдать примитив 
                 pEntityRes.m_entity =
-                    //new EntityParser.ProxyEntity (new Polyline3d(Poly3dType.SimplePoly, pnts, false))
-                    coneCtor.Invoke(new object[] { Poly3dType.SimplePoly, pnts, false })
-                    as Entity;
+                    // вариант №1
+                    pline3dCtor.Invoke(new object[] { Poly3dType.SimplePoly, pnts, false })
+                        //// вариант №2
+                        //pline3dCtor.Invoke(new object[] { })
+                        as Entity;
+
+                //// для варианта №2
+                //foreach (Point3d pt in pnts) {
+                //    vex3d = new PolylineVertex3d(pt);
+                //    (pEntityRes.m_entity as Polyline3d).AppendVertex(vex3d);
+                //}
+                //(pEntityRes.m_entity as Polyline3d).Close();
 
                 //pEntityRes.m_BlockName = blockName;
-            } else {
+            } else
                 Logging.AcEditorWriteMessage(string.Format(@"Недостаточно точек для создания {0} с именем={1}"
                     , entity.m_command
                     , entity.m_name
                 ));
-            }
 
             return pEntityRes;
         }

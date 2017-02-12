@@ -27,7 +27,7 @@ namespace Autodesk.Cad.Crushner.Assignment
             new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.CIRCLE, m_type = typeof(Circle), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ARC, m_type = typeof(Arc), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.LINE, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            //, new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.PLINE3, m_type = typeof(Polyline3d), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.PLINE3, m_type = typeof(Polyline3d), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.CONE, m_type = typeof(Solid3d), m_nameSolidType = @"Frustum", m_nameCreateMethod = @"CreateFrustum" }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.BOX, m_type = typeof(Solid3d), m_nameSolidType = @"Box", m_nameCreateMethod = @"CreateBox" }
             // линии - векторы
@@ -126,7 +126,7 @@ namespace Autodesk.Cad.Crushner.Assignment
             { COMMAND_ENTITY.CIRCLE, new METHODE_ENTITY () { newEntity = EntityCtor.newCircle, entityToDataRow = EntityCtor.circleToDataRow } }
             , { COMMAND_ENTITY.ARC, new METHODE_ENTITY () { newEntity = EntityCtor.newArc, entityToDataRow = EntityCtor.arcToDataRow } }
             , { COMMAND_ENTITY.LINE, new METHODE_ENTITY () { newEntity = EntityCtor.newLine, entityToDataRow = EntityCtor.lineToDataRow } }
-            //, { COMMAND_ENTITY.PLINE3, new METHODE_ENTITY () { newEntity = EntityCtor.newPolyLine3d, entityToDataRow = EntityCtor.polyLine3dToDataRow } }
+            , { COMMAND_ENTITY.PLINE3, new METHODE_ENTITY () { newEntity = EntityCtor.newPolyLine3d, entityToDataRow = EntityCtor.polyLine3dToDataRow } }
             , { COMMAND_ENTITY.CONE, new METHODE_ENTITY () { newEntity = EntityCtor.newCone, entityToDataRow = EntityCtor.coneToDataRow } }
             , { COMMAND_ENTITY.BOX, new METHODE_ENTITY () { newEntity = EntityCtor.newBox, entityToDataRow = EntityCtor.boxToDataRow } }
             // векторы - линии

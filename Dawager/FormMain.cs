@@ -133,6 +133,8 @@ namespace Dawager
                 m_listBoxFileSettings.SelectedIndex = 0;
             else
                 ;
+            // проверка выполнения ACad
+            ACadIsRunning = ACadApp.EnsureAutoCadIsRunning(string.Empty, true);
         }
 
         private void listBoxFileSettings_SelectedIndexChanged(object sender, EventArgs ev)
@@ -160,7 +162,7 @@ namespace Dawager
                         nodeEntity.Checked = true;
                     }
 
-                    foreach(MSExcel.BLOCK.PLACEMENT placement in MSExcel.s_dictBlock[nameBlock].m_ListReference) {
+                    foreach(MSExcel.POINT3D placement in MSExcel.s_dictBlock[nameBlock].m_ListReference) {
                         iRow = m_clbBlockReferences.Items.Add(string.Format(@"{0} ({1})"
                             , nameBlock, placement.ToString()), true);
                     }
@@ -181,6 +183,15 @@ namespace Dawager
         private void buttonBlockDefinitionUnchecked_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private bool _bACadIsRunning;
+
+        private bool ACadIsRunning { get { return _bACadIsRunning; } set { _bACadIsRunning = value; m_buttonAcadRunning.Text = value == true ? @"ACad-стоп" : @"ACad-старт"; } }
+
+        private void buttonAcadView_Click(object sender, EventArgs e)
+        {
+            ACadIsRunning = ACadApp.EnsureAutoCadIsRunning(string.Empty, false);
         }
     }
 }

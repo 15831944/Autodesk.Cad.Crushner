@@ -41,7 +41,7 @@
             this.m_listBoxFileSettings = new System.Windows.Forms.ListBox();
             this.m_clbBlockReferences = new System.Windows.Forms.CheckedListBox();
             this.m_buttonApply = new System.Windows.Forms.Button();
-            this.buttonAcadView = new System.Windows.Forms.Button();
+            this.m_buttonAcadRunning = new System.Windows.Forms.Button();
             this.m_buttonExit = new System.Windows.Forms.Button();
             this.m_buttonFileSttingsLoad = new System.Windows.Forms.Button();
             this.m_buttonFileSttingsSave = new System.Windows.Forms.Button();
@@ -163,15 +163,15 @@
             this.m_buttonApply.Text = "Применить";
             this.m_buttonApply.UseVisualStyleBackColor = true;
             // 
-            // buttonAcadView
+            // m_buttonAcadView
             // 
-            this.buttonAcadView.Enabled = false;
-            this.buttonAcadView.Location = new System.Drawing.Point(417, 442);
-            this.buttonAcadView.Name = "buttonAcadView";
-            this.buttonAcadView.Size = new System.Drawing.Size(75, 23);
-            this.buttonAcadView.TabIndex = 14;
-            this.buttonAcadView.Text = "Просмотр";
-            this.buttonAcadView.UseVisualStyleBackColor = true;
+            this.m_buttonAcadRunning.Location = new System.Drawing.Point(417, 442);
+            this.m_buttonAcadRunning.Name = "m_buttonAcadView";
+            this.m_buttonAcadRunning.Size = new System.Drawing.Size(75, 23);
+            this.m_buttonAcadRunning.TabIndex = 14;
+            this.m_buttonAcadRunning.Text = "ACad-старт";
+            this.m_buttonAcadRunning.UseVisualStyleBackColor = true;
+            this.m_buttonAcadRunning.Click += new System.EventHandler(this.buttonAcadView_Click);
             // 
             // m_buttonExit
             // 
@@ -259,7 +259,7 @@
             this.Controls.Add(this.m_buttonFileSttingsSave);
             this.Controls.Add(this.m_buttonFileSttingsLoad);
             this.Controls.Add(this.m_buttonExit);
-            this.Controls.Add(this.buttonAcadView);
+            this.Controls.Add(this.m_buttonAcadRunning);
             this.Controls.Add(this.m_buttonApply);
             this.Controls.Add(this.m_clbBlockReferences);
             this.Controls.Add(this.m_listBoxFileSettings);
@@ -297,7 +297,7 @@
         private System.Windows.Forms.ListBox m_listBoxFileSettings;
         private System.Windows.Forms.CheckedListBox m_clbBlockReferences;
         private System.Windows.Forms.Button m_buttonApply;
-        private System.Windows.Forms.Button buttonAcadView;
+        private System.Windows.Forms.Button m_buttonAcadRunning;
         private System.Windows.Forms.Button m_buttonExit;
         private System.Windows.Forms.Button m_buttonFileSttingsLoad;
         private System.Windows.Forms.Button m_buttonFileSttingsSave;

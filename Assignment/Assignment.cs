@@ -595,7 +595,7 @@ namespace Autodesk.Cad.Crushner.Assignment
                         btrCurrent = trCurrent.GetObject(btCurrSpace[blockName]
                             , OpenMode.ForWrite) as BlockTableRecord;
 
-                        foreach (Settings.MSExcel.BLOCK.PLACEMENT place in Settings.MSExcel.s_dictBlock[blockName].m_ListReference) {
+                        foreach (Settings.MSExcel.POINT3D place in Settings.MSExcel.s_dictBlock[blockName].m_ListReference) {
                             // создаем новое вхождение блока, используя ранее сохраненный ID определения блока
                             br = new BlockReference(new Point3d(place.Values), btrCurrent.Id);
                             // добавляем созданное вхождение блока на пространство модели и в транзакцию
@@ -615,7 +615,7 @@ namespace Autodesk.Cad.Crushner.Assignment
             }
         }
 
-        protected void referenceBlockAdd(string blockName, Settings.MSExcel.BLOCK.PLACEMENT place)
+        protected void referenceBlockAdd(string blockName, Settings.MSExcel.POINT3D place)
         {
             Database dbCurrent = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
             BlockTable btCurrSpace;

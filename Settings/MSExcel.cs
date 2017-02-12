@@ -152,6 +152,9 @@ namespace Autodesk.Cad.Crushner.Settings
         private static string WSHHEET_NAME_CONFIG = @"_CONFIG";
 
         private static string WSHHEET_NAME_BLOCK_REFERENCE = @"_BLOCK_REFERENCE";
+
+        public static object COORD3d { get; private set; }
+
         /// <summary>
         /// Импортировать список объектов
         /// </summary>
@@ -183,6 +186,77 @@ namespace Autodesk.Cad.Crushner.Settings
             }
 
             return iErr;
+        }
+
+        private enum INDEX_COORD3d { UNKNOWN = -2, ANY, X, Y, Z }
+
+        public static int GetLineEndPoint3d(COMMAND_ENTITY commandSlave, string blockName, string nameEntity, out POINT3D value)
+        {
+            int iRes = 0;
+            value = new POINT3D();
+
+            EntityParser.ProxyEntity entityFind;
+            // ??? проверить на корректность связи ведущий-ведомый (есть ли сопряжение по оси)
+            INDEX_COORD3d indxCoord3dLeading = INDEX_COORD3d.UNKNOWN
+                , indxCoord3dSlave = INDEX_COORD3d.UNKNOWN;
+
+            switch (commandSlave) {
+                //case COMMAND_ENTITY.ALINE_X:
+                case COMMAND_ENTITY.RLINE_X:
+                    indxCoord3dSlave = INDEX_COORD3d.X;
+                    break;
+                //case COMMAND_ENTITY.ALINE_Y:
+                case COMMAND_ENTITY.RLINE_Y:
+                    indxCoord3dSlave = INDEX_COORD3d.Z;
+                    break;
+                //case COMMAND_ENTITY.ALINE_Z:
+                case COMMAND_ENTITY.RLINE_Z:
+                    indxCoord3dSlave = INDEX_COORD3d.Z;
+                    break;
+                default:
+                    break;
+            }
+
+            if (s_dictBlock.ContainsKey(blockName) == true) {
+                entityFind = s_dictBlock[blockName].m_dictEntityParser.Values.First(entity => {
+                    return entity.m_name.Equals(nameEntity) == true;
+                });
+
+                if (!(entityFind.m_command == COMMAND_ENTITY.UNKNOWN)) {
+                    switch (entityFind.m_command) {
+                        case COMMAND_ENTITY.LINE:
+                            indxCoord3dLeading = INDEX_COORD3d.ANY;
+                            break;
+                        case COMMAND_ENTITY.ALINE_X:
+                        //case COMMAND_ENTITY.RLINE_X:
+                            indxCoord3dLeading = INDEX_COORD3d.X;
+                            break;
+                        case COMMAND_ENTITY.ALINE_Y:
+                        //case COMMAND_ENTITY.RLINE_Y:
+                            indxCoord3dLeading = INDEX_COORD3d.Z;
+                            break;
+                        case COMMAND_ENTITY.ALINE_Z:
+                        //case COMMAND_ENTITY.RLINE_Z:
+                            indxCoord3dLeading = INDEX_COORD3d.Z;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    iRes = ((indxCoord3dLeading == indxCoord3dSlave) || (indxCoord3dLeading == INDEX_COORD3d.ANY)) ? 0 : -1;
+
+                    if (iRes == 0)
+                        value = new POINT3D(new double[] {
+                            (double)entityFind.GetProperty(MSExcel.HEAP_INDEX_COLUMN.LINE_END_X)
+                            , (double)entityFind.GetProperty(MSExcel.HEAP_INDEX_COLUMN.LINE_END_Y)
+                            , (double)entityFind.GetProperty(MSExcel.HEAP_INDEX_COLUMN.LINE_END_Z)
+                        });
+                } else
+                    iRes = -2;
+            } else
+                iRes = -3;
+
+            return iRes;
         }
         /// <summary>
         /// Импортировать список объектов
@@ -304,6 +378,8 @@ namespace Autodesk.Cad.Crushner.Settings
                     , ews.Rows[range.FirstRowIndex + (format == FORMAT.HEAP ? 0 : format == FORMAT.ORDER ? 1 : 0)]
                     , ews.Columns[range.FirstColumnIndex]
                 );
+
+                _dictDataTableOfExcelWorksheet[ews.Name].TableName = ews.Name;
             } catch (Exception e) {
                 Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e, string.Format(@"Лист MS Excel: {0}", ews.Name));
             }

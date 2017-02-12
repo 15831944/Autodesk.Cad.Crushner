@@ -8,44 +8,46 @@ namespace Autodesk.Cad.Crushner.Settings
 {
     partial class MSExcel
     {
+        /// <summary>
+        /// Координаты точки для размещения блока
+        /// </summary>
+        public struct POINT3D
+        {
+            public double X;
+
+            public double Y;
+
+            public double Z;
+
+            public override string ToString()
+            {
+                return string.Format(@"координаты [{0}, {1}, {2}]"
+                    , X
+                    , Y
+                    , Z
+                );
+            }
+
+            public POINT3D(double[] values)
+            {
+                if (values.Length == 3) {
+                    X = values[0];
+                    Y = values[1];
+                    Z = values[2];
+                }
+                else
+                    throw new Exception(@"PLACEMENT невозможно определить: кол-во точек не равно 3...");
+            }
+
+            public double[] Values { get { return new double[] { X, Y, Z }; } }
+        }
+
         public class BLOCK
         {
             /// <summary>
-            /// Координаты точки для размещения блока
-            /// </summary>
-            public struct PLACEMENT
-            {
-                public double X;
-
-                public double Y;
-
-                public double Z;
-
-                public override string ToString()
-                {
-                    return string.Format(@"координаты [{0}, {1}, {2}]"
-                        , X
-                        , Y
-                        , Z
-                    );
-                }
-
-                public PLACEMENT(double[]values)
-                {
-                    if (values.Length == 3) {
-                        X = values[0];
-                        Y = values[1];
-                        Z = values[2];
-                    } else
-                        throw new Exception (@"PLACEMENT невозможно определить: кол-во точек не равно 3...");
-                }
-
-                public double[] Values { get { return new double[] { X, Y, Z }; } }
-            }
-            /// <summary>
             /// Список ссылок(копий) блока
             /// </summary>
-            public List<PLACEMENT> m_ListReference;
+            public List<POINT3D> m_ListReference;
 
             public Dictionary<KEY_ENTITY, EntityParser.ProxyEntity> m_dictEntityParser;
 
@@ -73,7 +75,7 @@ namespace Autodesk.Cad.Crushner.Settings
             protected void addItem (string blockName)
             {
                 this.Add(blockName, new BLOCK());
-                this[blockName].m_ListReference = new List<BLOCK.PLACEMENT>();
+                this[blockName].m_ListReference = new List<POINT3D>();
             }
 
             public void AddReference(DataRow rReference)
@@ -105,7 +107,7 @@ namespace Autodesk.Cad.Crushner.Settings
                     else
                         ;
 
-                    this[blockName].m_ListReference.Add(new BLOCK.PLACEMENT(pt3dvalues));
+                    this[blockName].m_ListReference.Add(new POINT3D(pt3dvalues));
                 } else
                     ; // ошибка добавления ссылки на блок
             }

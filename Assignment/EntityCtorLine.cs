@@ -19,7 +19,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityCtor.ProxyEntity newLine(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newLineDecart(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
@@ -27,15 +27,15 @@ namespace Autodesk.Cad.Crushner.Assignment
             // значения для параметров примитива
 
             (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_X)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_Y)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_Z));
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z));
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_X)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_Y)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_Z));
-            (pEntityRes.m_entity as Line).ColorIndex = (int)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX);
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS);
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z));
+            (pEntityRes.m_entity as Line).ColorIndex = (int)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX);
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS);
 
             //pEntityRes.m_BlockName = blockName;
 
@@ -48,7 +48,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityCtor.ProxyEntity newALineX(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newALineDecartX(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
@@ -56,16 +56,16 @@ namespace Autodesk.Cad.Crushner.Assignment
             // значения для параметров примитива
 
             (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_X)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_Y)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_Z));
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Y)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Z));
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 (pEntityRes.m_entity as Line).StartPoint.X +
-                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH)
+                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH)
                 , (pEntityRes.m_entity as Line).StartPoint.Y
                 , (pEntityRes.m_entity as Line).StartPoint.Z);
-            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX).ToString());
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS);
+            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX).ToString());
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS);
 
             return pEntityRes;
         }
@@ -76,23 +76,23 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityCtor.ProxyEntity newALineY(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newALineDecartY(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
             (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_X)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_Y)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_Z));
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Y)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Z));
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 (pEntityRes.m_entity as Line).StartPoint.X
                 , (pEntityRes.m_entity as Line).StartPoint.Y +
-                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH)
+                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH)
                 , (pEntityRes.m_entity as Line).StartPoint.Z);
-            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX).ToString());
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS);
+            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX).ToString());
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS);
 
             return pEntityRes;
         }
@@ -103,23 +103,23 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityCtor.ProxyEntity newALineZ(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newALineDecartZ(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
             (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_X)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_Y)
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_Z));
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Y)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Z));
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 (pEntityRes.m_entity as Line).StartPoint.X
                 , (pEntityRes.m_entity as Line).StartPoint.Y
                 , (pEntityRes.m_entity as Line).StartPoint.Z +
-                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH));
-            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX).ToString());
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS);
+                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH));
+            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX).ToString());
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS);
 
             return pEntityRes;
         }
@@ -130,18 +130,18 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <param name="format">Формат файла конфигурации из которого была импортирована таблица</param>
         /// <param name="blockName">Наимнование блока (только при формате 'HEAP')</param>
         /// <returns>Объект примитива - линия</returns>
-        public static EntityCtor.ProxyEntity newRLineX(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newRLineDecartX(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             string nameEntityRelative = string.Empty;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
-            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE).ToString();
+            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE).ToString();
 
             (pEntityRes.m_entity as Line).StartPoint = Point3d.Origin;
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH)
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH)
                 , Point3d.Origin.Y
                 , Point3d.Origin.Z
             );
@@ -149,45 +149,45 @@ namespace Autodesk.Cad.Crushner.Assignment
             return pEntityRes;
         }
 
-        public static EntityCtor.ProxyEntity newRLineY(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newRLineDecartY(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             string nameEntityRelative = string.Empty;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
-            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE).ToString();
+            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE).ToString();
 
             (pEntityRes.m_entity as Line).StartPoint = Point3d.Origin;
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 Point3d.Origin.X
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH)
                 , Point3d.Origin.Z
             );
 
             return pEntityRes;
         }
 
-        public static EntityCtor.ProxyEntity newRLineZ(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
+        public static EntityCtor.ProxyEntity newRLineDecartZ(Settings.EntityParser.ProxyEntity entity/*, string blockName*/)
         {
             EntityCtor.ProxyEntity pEntityRes;
             string nameEntityRelative = string.Empty;
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
-            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE).ToString();
+            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE).ToString();
 
             (pEntityRes.m_entity as Line).StartPoint = Point3d.Origin;
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 Point3d.Origin.X
                 , Point3d.Origin.Y
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH)
             );
 
             return pEntityRes;
         }
 
-        public static Settings.EntityParser.ProxyEntity lineToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity lineDecartToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes;
 
@@ -206,12 +206,21 @@ namespace Autodesk.Cad.Crushner.Assignment
 
             return rowRes;
         }
+
+        public static Settings.EntityParser.ProxyEntity lineSphereToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        {
+            Settings.EntityParser.ProxyEntity rowRes;
+
+            throw new NotImplementedException();
+
+            return rowRes;
+        }
         /// <summary>
         /// Преобразовать объект Acad в объект конфигурации для возможности экспорта
         /// </summary>
         /// <param name="pair">Ключ объекта + объект ACad</param>
         /// <returns>Объект конфигурации</returns>
-        public static Settings.EntityParser.ProxyEntity alineXToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity alineDecartXToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes = new Settings.EntityParser.ProxyEntity();
 
@@ -222,7 +231,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         /// <param name="pair">Ключ объекта + объект ACad</param>
         /// <returns>Объект конфигурации</returns>
-        public static Settings.EntityParser.ProxyEntity alineYToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity alineDecartYToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes = new Settings.EntityParser.ProxyEntity();
 
@@ -233,7 +242,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         /// <param name="pair">Ключ объекта + объект ACad</param>
         /// <returns>Объект конфигурации</returns>
-        public static Settings.EntityParser.ProxyEntity alineZToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity alineDecartZToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes = new Settings.EntityParser.ProxyEntity();
 
@@ -244,7 +253,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         /// <param name="pair">Ключ объекта + объект ACad</param>
         /// <returns>Объект конфигурации</returns>
-        public static Settings.EntityParser.ProxyEntity rlineXToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity rlineDecartXToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes = new Settings.EntityParser.ProxyEntity();
 
@@ -255,7 +264,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         /// <param name="pair">Ключ объекта + объект ACad</param>
         /// <returns>Объект конфигурации</returns>
-        public static Settings.EntityParser.ProxyEntity rlineYToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity rlineDecartYToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes = new Settings.EntityParser.ProxyEntity();
 
@@ -266,7 +275,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         /// <param name="pair">Ключ объекта + объект ACad</param>
         /// <returns>Объект конфигурации</returns>
-        public static Settings.EntityParser.ProxyEntity rlineZToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
+        public static Settings.EntityParser.ProxyEntity rlineDecartZToDataRow(KeyValuePair<KEY_ENTITY, EntityCtor.ProxyEntity> pair)
         {
             Settings.EntityParser.ProxyEntity rowRes = new Settings.EntityParser.ProxyEntity();
 

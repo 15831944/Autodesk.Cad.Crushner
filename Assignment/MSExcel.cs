@@ -26,17 +26,19 @@ namespace Autodesk.Cad.Crushner.Assignment
         public static readonly List<MAP_KEY_ENTITY> s_MappingKeyEntity = new List<MAP_KEY_ENTITY>() {
             new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.CIRCLE, m_type = typeof(Circle), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ARC, m_type = typeof(Arc), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.LINE, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.LINE_DECART, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.PLINE3, m_type = typeof(Polyline3d), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.CONE, m_type = typeof(Solid3d), m_nameSolidType = @"Frustum", m_nameCreateMethod = @"CreateFrustum" }
             , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.BOX, m_type = typeof(Solid3d), m_nameSolidType = @"Box", m_nameCreateMethod = @"CreateBox" }
             // линии - векторы
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_X, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_Y, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_Z, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_X, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_Y, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
-            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_Z, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_DECART_X, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_DECART_Y, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.ALINE_DECART_Z, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_DECART_X, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_DECART_Y, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.RLINE_DECART_Z, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
+            // линия - сферическая СК
+            , new MAP_KEY_ENTITY () { m_command = COMMAND_ENTITY.LINE_SPHERE, m_type = typeof(Line), m_nameSolidType = string.Empty, m_nameCreateMethod = string.Empty }
             ,
         };
 
@@ -125,17 +127,19 @@ namespace Autodesk.Cad.Crushner.Assignment
         private static Dictionary<COMMAND_ENTITY, METHODE_ENTITY> dictDelegateMethodeEntity = new Dictionary<COMMAND_ENTITY, METHODE_ENTITY>() {
             { COMMAND_ENTITY.CIRCLE, new METHODE_ENTITY () { newEntity = EntityCtor.newCircle, entityToDataRow = EntityCtor.circleToDataRow } }
             , { COMMAND_ENTITY.ARC, new METHODE_ENTITY () { newEntity = EntityCtor.newArc, entityToDataRow = EntityCtor.arcToDataRow } }
-            , { COMMAND_ENTITY.LINE, new METHODE_ENTITY () { newEntity = EntityCtor.newLine, entityToDataRow = EntityCtor.lineToDataRow } }
+            , { COMMAND_ENTITY.LINE_DECART, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.lineDecartToDataRow } }
             , { COMMAND_ENTITY.PLINE3, new METHODE_ENTITY () { newEntity = EntityCtor.newPolyLine3d, entityToDataRow = EntityCtor.polyLine3dToDataRow } }
             , { COMMAND_ENTITY.CONE, new METHODE_ENTITY () { newEntity = EntityCtor.newCone, entityToDataRow = EntityCtor.coneToDataRow } }
             , { COMMAND_ENTITY.BOX, new METHODE_ENTITY () { newEntity = EntityCtor.newBox, entityToDataRow = EntityCtor.boxToDataRow } }
             // векторы - линии
-            , { COMMAND_ENTITY.ALINE_X, new METHODE_ENTITY () { newEntity = EntityCtor./*newALineX*/newLine, entityToDataRow = EntityCtor.alineXToDataRow } }
-            , { COMMAND_ENTITY.ALINE_Y, new METHODE_ENTITY () { newEntity = EntityCtor./*newALineY*/newLine, entityToDataRow = EntityCtor.alineYToDataRow } }
-            , { COMMAND_ENTITY.ALINE_Z, new METHODE_ENTITY () { newEntity = EntityCtor./*newALineZ*/newLine, entityToDataRow = EntityCtor.alineZToDataRow } }
-            , { COMMAND_ENTITY.RLINE_X, new METHODE_ENTITY () { newEntity = EntityCtor./*newRLineX*/newLine, entityToDataRow = EntityCtor.rlineXToDataRow } }
-            , { COMMAND_ENTITY.RLINE_Y, new METHODE_ENTITY () { newEntity = EntityCtor./*newRLineY*/newLine, entityToDataRow = EntityCtor.rlineYToDataRow } }
-            , { COMMAND_ENTITY.RLINE_Z, new METHODE_ENTITY () { newEntity = EntityCtor./*newRLineZ*/newLine, entityToDataRow = EntityCtor.rlineZToDataRow } }
+            , { COMMAND_ENTITY.ALINE_DECART_X, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.alineDecartXToDataRow } }
+            , { COMMAND_ENTITY.ALINE_DECART_Y, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.alineDecartYToDataRow } }
+            , { COMMAND_ENTITY.ALINE_DECART_Z, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.alineDecartZToDataRow } }
+            , { COMMAND_ENTITY.RLINE_DECART_X, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.rlineDecartXToDataRow } }
+            , { COMMAND_ENTITY.RLINE_DECART_Y, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.rlineDecartYToDataRow } }
+            , { COMMAND_ENTITY.RLINE_DECART_Z, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.rlineDecartZToDataRow } }
+             // линия - сферическая СК
+            , { COMMAND_ENTITY.LINE_SPHERE, new METHODE_ENTITY () { newEntity = EntityCtor.newLineDecart, entityToDataRow = EntityCtor.lineSphereToDataRow } }
             ,
         };
         /// <summary>

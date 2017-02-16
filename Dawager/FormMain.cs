@@ -118,7 +118,7 @@ namespace Dawager
             Close();
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private void FormMain_Load(object sender, EventArgs ev)
         {
             string curPath = Environment.CurrentDirectory;
 
@@ -129,12 +129,19 @@ namespace Dawager
                 m_listBoxFileSettings.Items.Add(Path.GetFileName(fullPathFileSettings));
             });
 
-            if (m_listBoxFileSettings.Items.Count > 0)
-                m_listBoxFileSettings.SelectedIndex = 0;
-            else
-                ;
-            // проверка выполнения ACad
-            ACadIsRunning = ACadApp.EnsureAutoCadIsRunning(string.Empty, true);
+            try {
+                if (m_listBoxFileSettings.Items.Count > 0)
+                    m_listBoxFileSettings.SelectedIndex = 0
+                    ;
+                else
+                    ;
+                // проверка выполнения ACad
+                ACadIsRunning = ACadApp.EnsureAutoCadIsRunning(string.Empty, true);
+            } catch (System.IO.FileNotFoundException e) {
+                    Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
+                } catch (Exception e) {
+                    Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e);
+                }
         }
 
         private void listBoxFileSettings_SelectedIndexChanged(object sender, EventArgs ev)

@@ -24,7 +24,7 @@ namespace Autodesk.Cad.Crushner.Settings
             switch(format) {
                 case MSExcel.FORMAT.HEAP:
                     name = (string)rEntity[(int)INDEX_KEY.NAME];
-                    bRes = Enum.TryParse((string)rEntity[(int)INDEX_KEY.COMMAND], true, out command);
+                    bRes = MSExcel.COMMAND_ENTITY.TryParse((string)rEntity[(int)INDEX_KEY.COMMAND], true, out command);
                     break;
                 case MSExcel.FORMAT.ORDER:
                 default:

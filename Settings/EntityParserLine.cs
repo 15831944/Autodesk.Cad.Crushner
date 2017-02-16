@@ -29,10 +29,10 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-                // значения для параметров примитива
+            // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
-                        ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X].ToString()
+                        ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X].ToString()
                             , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
                         ptStart[(int)COORD3d.Y] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y].ToString()
                             , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
@@ -50,17 +50,17 @@ namespace Autodesk.Cad.Crushner.Settings
                             name
                             , command
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -86,16 +86,16 @@ namespace Autodesk.Cad.Crushner.Settings
                             name
                             , command
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
                                     , int.Parse(rEntity[@"ColorIndex"].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
                                     , double.Parse(rEntity[@"TICKNESS"].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
@@ -130,7 +130,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-            // значения для параметров примитива
+                // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_SPHERE_START_X].ToString()
@@ -153,19 +153,19 @@ namespace Autodesk.Cad.Crushner.Settings
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
                                     , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_SPHERE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_SPHERE_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS].ToString()
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -178,7 +178,8 @@ namespace Autodesk.Cad.Crushner.Settings
                         pEntityRes = new ProxyEntity();
                         break;
                 }
-            else {
+            else
+            {
                 pEntityRes = new ProxyEntity();
 
                 Core.Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Ошибка опрделения имени, типа  сущности..."));
@@ -204,7 +205,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-                // значения для параметров примитива
+            // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X].ToString()
@@ -215,25 +216,25 @@ namespace Autodesk.Cad.Crushner.Settings
                             , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                         ptEnd[(int)COORD3d.X] = ptStart[(int)COORD3d.X] +
-                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
                         ptEnd[(int)COORD3d.Y] = ptStart[(int)COORD3d.Y];
                         ptEnd[(int)COORD3d.Z] = ptStart[(int)COORD3d.Z];
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -269,7 +270,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-                // значения для параметров примитива
+            // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X].ToString()
@@ -281,24 +282,24 @@ namespace Autodesk.Cad.Crushner.Settings
 
                         ptEnd[(int)COORD3d.X] = ptStart[(int)COORD3d.X];
                         ptEnd[(int)COORD3d.Y] = ptStart[(int)COORD3d.Y] +
-                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
                         ptEnd[(int)COORD3d.Z] = ptStart[(int)COORD3d.Z];
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -334,7 +335,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-                // значения для параметров примитива
+            // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X].ToString()
@@ -347,23 +348,23 @@ namespace Autodesk.Cad.Crushner.Settings
                         ptEnd[(int)COORD3d.X] = ptStart[(int)COORD3d.X];
                         ptEnd[(int)COORD3d.Y] = ptStart[(int)COORD3d.Y];
                         ptEnd[(int)COORD3d.Z] = ptStart[(int)COORD3d.Z] +
-                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -395,11 +396,16 @@ namespace Autodesk.Cad.Crushner.Settings
             double[] ptStart = new double[(int)COORD3d.COUNT]
                 , ptEnd = new double[(int)COORD3d.COUNT];
             string nameEntityRelative = string.Empty;
+            MSExcel.POINT3D placementEnd;
 
+            string name = string.Empty;
+            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
+
+            if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
             // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
-                        nameEntityRelative = rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE].ToString();
+                        nameEntityRelative = rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE].ToString();
                         if (!(MSExcel.GetLineEndPoint3d(command, rEntity.Table.TableName, nameEntityRelative, out placementEnd) < 0))
                             ptStart = placementEnd.Values;
                         else {
@@ -409,23 +415,23 @@ namespace Autodesk.Cad.Crushner.Settings
                         }
 
                         ptEnd[(int)COORD3d.X] =
-                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -451,11 +457,16 @@ namespace Autodesk.Cad.Crushner.Settings
             double[] ptStart = new double[(int)COORD3d.COUNT]
                 , ptEnd = new double[(int)COORD3d.COUNT];
             string nameEntityRelative = string.Empty;
+            MSExcel.POINT3D placementEnd;
 
+            string name = string.Empty;
+            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
+
+            if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
             // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
-                        nameEntityRelative = rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE].ToString();
+                        nameEntityRelative = rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE].ToString();
                         if (!(MSExcel.GetLineEndPoint3d(command, string.Empty, nameEntityRelative, out placementEnd) < 0))
                             ptStart = placementEnd.Values;
                         else {
@@ -465,23 +476,23 @@ namespace Autodesk.Cad.Crushner.Settings
                         }
 
                         ptEnd[(int)COORD3d.Y] =
-                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );
@@ -507,11 +518,16 @@ namespace Autodesk.Cad.Crushner.Settings
             double[] ptStart = new double[(int)COORD3d.COUNT]
                 , ptEnd = new double[(int)COORD3d.COUNT];
             string nameEntityRelative = string.Empty;
+            MSExcel.POINT3D placementEnd;
 
+            string name = string.Empty;
+            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
+
+            if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
             // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
-                        nameEntityRelative = rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE].ToString();
+                        nameEntityRelative = rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE].ToString();
                         if (!(MSExcel.GetLineEndPoint3d(command, string.Empty, nameEntityRelative, out placementEnd) < 0))
                             ptStart = placementEnd.Values;
                         else {
@@ -521,23 +537,23 @@ namespace Autodesk.Cad.Crushner.Settings
                         }
 
                         ptEnd[(int)COORD3d.Z] =
-                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                            double.Parse(rEntity[(int)Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 
                         pEntityRes = new ProxyEntity(
                             name
-                            , MSExcel.COMMAND_ENTITY.LINE_DECART
+                            , MSExcel.COMMAND_ENTITY.LINE
                             , new ProxyEntity.Property[] {
-                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X, ptStart[(int)COORD3d.X])
+                                new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_X, ptStart[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y, ptStart[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z, ptStart[(int)COORD3d.Z])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X, ptEnd[(int)COORD3d.X])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y, ptEnd[(int)COORD3d.Y])
                                 , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z, ptEnd[(int)COORD3d.Z])
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX
-                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_COLORINDEX].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX
+                                    , int.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_COLORINDEX].ToString()
                                         , System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture))
-                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS
-                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_TICKNESS].ToString()
+                                , new ProxyEntity.Property ((int)MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS
+                                    , double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.RLINE_TICKNESS].ToString()
                                         , System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture))
                             }
                         );

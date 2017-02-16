@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="accoremgd">
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2013\accoremgd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="GemBox.Spreadsheet, Version=39.3.30.1125, Culture=neutral, PublicKeyToken=5f90228d2ea763cf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ExternalDll\GemBox.Spreadsheet.dll</HintPath>

@@ -27,15 +27,15 @@ namespace Autodesk.Cad.Crushner.Assignment
             // значения для параметров примитива
 
             (pEntityRes.m_entity as Line).StartPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X)
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_X)
                 , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Y)
                 , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_START_DECART_Z));
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_X)
                 , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Y)
                 , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_END_DECART_Z));
-            (pEntityRes.m_entity as Line).ColorIndex = (int)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_COLORINDEX);
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_TICKNESS);
+            (pEntityRes.m_entity as Line).ColorIndex = (int)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_COLORINDEX);
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.LINE_TICKNESS);
 
             //pEntityRes.m_BlockName = blockName;
 
@@ -61,11 +61,11 @@ namespace Autodesk.Cad.Crushner.Assignment
                 , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_Z));
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 (pEntityRes.m_entity as Line).StartPoint.X +
-                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH)
+                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH)
                 , (pEntityRes.m_entity as Line).StartPoint.Y
                 , (pEntityRes.m_entity as Line).StartPoint.Z);
-            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX).ToString());
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS);
+            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX).ToString());
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS);
 
             return pEntityRes;
         }
@@ -89,10 +89,10 @@ namespace Autodesk.Cad.Crushner.Assignment
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 (pEntityRes.m_entity as Line).StartPoint.X
                 , (pEntityRes.m_entity as Line).StartPoint.Y +
-                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH)
+                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH)
                 , (pEntityRes.m_entity as Line).StartPoint.Z);
-            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX).ToString());
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS);
+            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX).ToString());
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS);
 
             return pEntityRes;
         }
@@ -117,9 +117,9 @@ namespace Autodesk.Cad.Crushner.Assignment
                 (pEntityRes.m_entity as Line).StartPoint.X
                 , (pEntityRes.m_entity as Line).StartPoint.Y
                 , (pEntityRes.m_entity as Line).StartPoint.Z +
-                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_LENGTH));
-            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_COLORINDEX).ToString());
-            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_DECART_TICKNESS);
+                    (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_LENGTH));
+            (pEntityRes.m_entity as Line).ColorIndex = int.Parse(entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_COLORINDEX).ToString());
+            (pEntityRes.m_entity as Line).Thickness = (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.ALINE_TICKNESS);
 
             return pEntityRes;
         }
@@ -137,11 +137,11 @@ namespace Autodesk.Cad.Crushner.Assignment
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
-            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE).ToString();
+            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE).ToString();
 
             (pEntityRes.m_entity as Line).StartPoint = Point3d.Origin;
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
-                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH)
+                (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH)
                 , Point3d.Origin.Y
                 , Point3d.Origin.Z
             );
@@ -156,12 +156,12 @@ namespace Autodesk.Cad.Crushner.Assignment
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
-            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE).ToString();
+            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE).ToString();
 
             (pEntityRes.m_entity as Line).StartPoint = Point3d.Origin;
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 Point3d.Origin.X
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH)
                 , Point3d.Origin.Z
             );
 
@@ -175,13 +175,13 @@ namespace Autodesk.Cad.Crushner.Assignment
             // соэдать примитив 
             pEntityRes = new ProxyEntity(new Line());
             // значения для параметров примитива
-            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_NAME_ENTITY_RELATIVE).ToString();
+            nameEntityRelative = entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_NAME_ENTITY_RELATIVE).ToString();
 
             (pEntityRes.m_entity as Line).StartPoint = Point3d.Origin;
             (pEntityRes.m_entity as Line).EndPoint = new Point3d(
                 Point3d.Origin.X
                 , Point3d.Origin.Y
-                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_DECART_LENGTH)
+                , (double)entity.GetProperty(Settings.MSExcel.HEAP_INDEX_COLUMN.RLINE_LENGTH)
             );
 
             return pEntityRes;

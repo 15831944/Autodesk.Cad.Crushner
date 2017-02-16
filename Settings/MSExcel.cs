@@ -19,8 +19,8 @@ namespace Autodesk.Cad.Crushner.Settings
         public enum COMMAND_ENTITY : short
         {
             UNKNOWN = 0
-            , CIRCLE, ARC, LINE_DECART, PLINE3, CONE, BOX
-            , ALINE_DECART_X, ALINE_DECART_Y, ALINE_DECART_Z, RLINE_DECART_X, RLINE_DECART_Y, RLINE_DECART_Z, LINE_SPHERE
+            , CIRCLE, ARC, LINE, PLINE3, CONE, BOX
+            , ALINE_X, ALINE_Y, ALINE_Z, RLINE_X, RLINE_Y, RLINE_Z, LINE_SPHERE
                 , COUNT
         }
         /// <summary>
@@ -34,13 +34,13 @@ namespace Autodesk.Cad.Crushner.Settings
         {
             CIRCLE_CENTER_X = _HEAP_INDEX_COLUMN_PROPERTY, CIRCLE_CENTER_Y, CIRCLE_CENTER_Z, CIRCLE_RADIUS, CIRCLE_COLORINDEX, CIRCLE_TICKNESS
             , ARC_CENTER_X = _HEAP_INDEX_COLUMN_PROPERTY, ARC_CENTER_Y, ARC_CENTER_Z, ARC_RADIUS, ARC_ANGLE_START, ARC_ANGLE_END, ARC_COLORINDEX, ARC_TICKNESS
-            , LINE_DECART_START_X = _HEAP_INDEX_COLUMN_PROPERTY, LINE_START_DECART_Y, LINE_START_DECART_Z, LINE_END_DECART_X, LINE_END_DECART_Y, LINE_END_DECART_Z, LINE_DECART_COLORINDEX, LINE_DECART_TICKNESS
+            , LINE_START_X = _HEAP_INDEX_COLUMN_PROPERTY, LINE_START_DECART_Y, LINE_START_DECART_Z, LINE_END_DECART_X, LINE_END_DECART_Y, LINE_END_DECART_Z, LINE_COLORINDEX, LINE_TICKNESS
             , POLYLINE_X_START = _HEAP_INDEX_COLUMN_PROPERTY
             , CONE_HEIGHT = _HEAP_INDEX_COLUMN_PROPERTY, CONE_ARADIUS_X, CONE_ARADIUS_Y, CONE_RADIUS_TOP, CONE_PTDISPLACEMENT_X, CONE_PTDISPLACEMENT_Y, CONE_PTDISPLACEMENT_Z
             , BOX_LAENGTH_X = _HEAP_INDEX_COLUMN_PROPERTY, BOX_LAENGTH_Y, BOX_LAENGTH_Z, BOX_PTDISPLACEMENT_X, BOX_PTDISPLACEMENT_Y, BOX_PTDISPLACEMENT_Z
-            , ALINE_START_DECART_X = _HEAP_INDEX_COLUMN_PROPERTY, ALINE_START_DECART_Y, ALINE_START_DECART_Z, ALINE_DECART_LENGTH, ALINE_DECART_COLORINDEX, ALINE_DECART_TICKNESS
-            , RLINE_DECART_NAME_ENTITY_RELATIVE = _HEAP_INDEX_COLUMN_PROPERTY, RLINE_DECART_LENGTH, RLINE_DECART_COLORINDEX, RLINE_DECART_TICKNESS
-            , LINE_SPHERE_START_X, LINE_SPHERE_START_Y, LINE_SPHERE_START_Z, LINE_SPHERE_RADIUS, LINE_SPHERE_ANGLE_XY, LINE_SPHERE_ANGLE_Z, LINE_SPHERE_COLORINDEX, LINE_SPHERE_TICKNESS
+            , ALINE_START_DECART_X = _HEAP_INDEX_COLUMN_PROPERTY, ALINE_START_DECART_Y, ALINE_START_DECART_Z, ALINE_LENGTH, ALINE_COLORINDEX, ALINE_TICKNESS
+            , RLINE_NAME_ENTITY_RELATIVE = _HEAP_INDEX_COLUMN_PROPERTY, RLINE_LENGTH, RLINE_COLORINDEX, RLINE_TICKNESS
+            , LINE_SPHERE_START_X = _HEAP_INDEX_COLUMN_PROPERTY, LINE_SPHERE_START_Y, LINE_SPHERE_START_Z, LINE_SPHERE_RADIUS, LINE_SPHERE_ANGLE_XY, LINE_SPHERE_ANGLE_Z, LINE_SPHERE_COLORINDEX, LINE_SPHERE_TICKNESS
             ,
         }
         /// <summary>
@@ -64,17 +64,17 @@ namespace Autodesk.Cad.Crushner.Settings
         private static Dictionary<COMMAND_ENTITY, delegateNewEntity> dictDelegateNewProxyEntity = new Dictionary<COMMAND_ENTITY, delegateNewEntity>() {
             { COMMAND_ENTITY.ARC, EntityParser.newArc }
             , { COMMAND_ENTITY.CIRCLE, EntityParser.newCircle }
-            , { COMMAND_ENTITY.LINE_DECART, EntityParser.newLineDecart }
+            , { COMMAND_ENTITY.LINE, EntityParser.newLineDecart }
             , { COMMAND_ENTITY.PLINE3, EntityParser.newPolyLine3d }
             , { COMMAND_ENTITY.BOX, EntityParser.newBox }
             , { COMMAND_ENTITY.CONE, EntityParser.newCone }
             // векторы - линиии
-            , { COMMAND_ENTITY.ALINE_DECART_X, EntityParser.newALineX }
-            , { COMMAND_ENTITY.ALINE_DECART_Y, EntityParser.newALineY }
-            , { COMMAND_ENTITY.ALINE_DECART_Z, EntityParser.newALineZ }
-            , { COMMAND_ENTITY.RLINE_DECART_X, EntityParser.newRLineX }
-            , { COMMAND_ENTITY.RLINE_DECART_Y, EntityParser.newRLineY }
-            , { COMMAND_ENTITY.RLINE_DECART_Z, EntityParser.newRLineZ }
+            , { COMMAND_ENTITY.ALINE_X, EntityParser.newALineX }
+            , { COMMAND_ENTITY.ALINE_Y, EntityParser.newALineY }
+            , { COMMAND_ENTITY.ALINE_Z, EntityParser.newALineZ }
+            , { COMMAND_ENTITY.RLINE_X, EntityParser.newRLineX }
+            , { COMMAND_ENTITY.RLINE_Y, EntityParser.newRLineY }
+            , { COMMAND_ENTITY.RLINE_Z, EntityParser.newRLineZ }
             // линия - сферическая СК
             , { COMMAND_ENTITY.LINE_SPHERE, EntityParser.newLineSphere }
             ,
@@ -156,6 +156,9 @@ namespace Autodesk.Cad.Crushner.Settings
         private static string WSHHEET_NAME_CONFIG = @"_CONFIG";
 
         private static string WSHHEET_NAME_BLOCK_REFERENCE = @"_BLOCK_REFERENCE";
+
+        public static object COORD3d { get; private set; }
+
         /// <summary>
         /// Импортировать список объектов
         /// </summary>
@@ -166,15 +169,16 @@ namespace Autodesk.Cad.Crushner.Settings
         {
             int iErr = 0;
 
-            string strNameSettings = getFullNameSettingsExcelFile(strNameSettingsExcelFile);
+            ExcelFile ef;
 
-            _dictDataTableOfExcelWorksheet = new Dictionary<string, System.Data.DataTable>();
+            try {
+                string strNameSettings = getFullNameSettingsExcelFile(strNameSettingsExcelFile);
 
-            //GemBox.Spreadsheet.SpreadsheetInfo.SetLicense(@"FREE-LIMITED-KEY");
+                _dictDataTableOfExcelWorksheet = new Dictionary<string, System.Data.DataTable>();
 
-            try
-            {
-                ExcelFile ef = new ExcelFile();
+                //GemBox.Spreadsheet.SpreadsheetInfo.SetLicense(@"FREE-LIMITED-KEY");
+            
+                ef = new ExcelFile();
                 ef.LoadXls(strNameSettings, XlsOptions.None);
 
                 Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Книга открыта {0}, листов = {1}", strNameSettings, ef.Worksheets.Count));
@@ -203,15 +207,15 @@ namespace Autodesk.Cad.Crushner.Settings
 
             switch (commandSlave) {
                 //case COMMAND_ENTITY.ALINE_X:
-                case COMMAND_ENTITY.RLINE_DECART_X:
+                case COMMAND_ENTITY.RLINE_X:
                     indxCoord3dSlave = INDEX_COORD3d.X;
                     break;
                 //case COMMAND_ENTITY.ALINE_Y:
-                case COMMAND_ENTITY.RLINE_DECART_Y:
+                case COMMAND_ENTITY.RLINE_Y:
                     indxCoord3dSlave = INDEX_COORD3d.Z;
                     break;
                 //case COMMAND_ENTITY.ALINE_Z:
-                case COMMAND_ENTITY.RLINE_DECART_Z:
+                case COMMAND_ENTITY.RLINE_Z:
                     indxCoord3dSlave = INDEX_COORD3d.Z;
                     break;
                 default:
@@ -225,18 +229,18 @@ namespace Autodesk.Cad.Crushner.Settings
 
                 if (!(entityFind.m_command == COMMAND_ENTITY.UNKNOWN)) {
                     switch (entityFind.m_command) {
-                        case COMMAND_ENTITY.LINE_DECART:
+                        case COMMAND_ENTITY.LINE:
                             indxCoord3dLeading = INDEX_COORD3d.ANY;
                             break;
-                        case COMMAND_ENTITY.ALINE_DECART_X:
+                        case COMMAND_ENTITY.ALINE_X:
                         //case COMMAND_ENTITY.RLINE_X:
                             indxCoord3dLeading = INDEX_COORD3d.X;
                             break;
-                        case COMMAND_ENTITY.ALINE_DECART_Y:
+                        case COMMAND_ENTITY.ALINE_Y:
                         //case COMMAND_ENTITY.RLINE_Y:
                             indxCoord3dLeading = INDEX_COORD3d.Z;
                             break;
-                        case COMMAND_ENTITY.ALINE_DECART_Z:
+                        case COMMAND_ENTITY.ALINE_Z:
                         //case COMMAND_ENTITY.RLINE_Z:
                             indxCoord3dLeading = INDEX_COORD3d.Z;
                             break;
@@ -362,6 +366,7 @@ namespace Autodesk.Cad.Crushner.Settings
 
             return rangeRes;
         }
+
         private static void extractDataWorksheet(ExcelWorksheet ews, GemBox.Spreadsheet.CellRange range, FORMAT format)
         {
             // создать структуру таблицы - добавить поля в таблицу, при необходимости создать таблицу
@@ -379,6 +384,8 @@ namespace Autodesk.Cad.Crushner.Settings
                     , ews.Rows[range.FirstRowIndex + (format == FORMAT.HEAP ? 0 : format == FORMAT.ORDER ? 1 : 0)]
                     , ews.Columns[range.FirstColumnIndex]
                 );
+
+                _dictDataTableOfExcelWorksheet[ews.Name].TableName = ews.Name;
             } catch (Exception e) {
                 Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e, string.Format(@"Лист MS Excel: {0}", ews.Name));
             }

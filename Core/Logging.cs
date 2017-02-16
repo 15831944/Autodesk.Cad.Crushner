@@ -17,7 +17,9 @@ namespace Autodesk.Cad.Crushner.Core
                 ;
         }
 
-        protected virtual Logging create () { return new Logging(); }
+        protected virtual Logging create () {
+            return new Logging();
+        }
 
         protected Logging _this;
         /// <summary>

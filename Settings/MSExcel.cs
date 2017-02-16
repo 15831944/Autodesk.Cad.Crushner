@@ -75,7 +75,9 @@ namespace Autodesk.Cad.Crushner.Settings
             , { COMMAND_ENTITY.RLINE_DECART_X, EntityParser.newRLineX }
             , { COMMAND_ENTITY.RLINE_DECART_Y, EntityParser.newRLineY }
             , { COMMAND_ENTITY.RLINE_DECART_Z, EntityParser.newRLineZ }
+            // линия - сферическая СК
             , { COMMAND_ENTITY.LINE_SPHERE, EntityParser.newLineSphere }
+            ,
         };
         /// <summary>
         /// Возвратить полное путь с именем файла (книги MS Excel) конфигурации

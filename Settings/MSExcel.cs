@@ -156,9 +156,6 @@ namespace Autodesk.Cad.Crushner.Settings
         private static string WSHHEET_NAME_CONFIG = @"_CONFIG";
 
         private static string WSHHEET_NAME_BLOCK_REFERENCE = @"_BLOCK_REFERENCE";
-
-        public static object COORD3d { get; private set; }
-
         /// <summary>
         /// Импортировать список объектов
         /// </summary>
@@ -382,8 +379,6 @@ namespace Autodesk.Cad.Crushner.Settings
                     , ews.Rows[range.FirstRowIndex + (format == FORMAT.HEAP ? 0 : format == FORMAT.ORDER ? 1 : 0)]
                     , ews.Columns[range.FirstColumnIndex]
                 );
-
-                _dictDataTableOfExcelWorksheet[ews.Name].TableName = ews.Name;
             } catch (Exception e) {
                 Logging.ExceptionCaller(MethodBase.GetCurrentMethod(), e, string.Format(@"Лист MS Excel: {0}", ews.Name));
             }

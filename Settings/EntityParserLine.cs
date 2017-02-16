@@ -29,7 +29,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-            // значения для параметров примитива
+                // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.LINE_DECART_START_X].ToString()
@@ -204,7 +204,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-            // значения для параметров примитива
+                // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X].ToString()
@@ -269,7 +269,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-            // значения для параметров примитива
+                // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X].ToString()
@@ -334,7 +334,7 @@ namespace Autodesk.Cad.Crushner.Settings
             MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
 
             if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
-            // значения для параметров примитива
+                // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
                         ptStart[(int)COORD3d.X] = double.Parse(rEntity[(int)MSExcel.HEAP_INDEX_COLUMN.ALINE_START_DECART_X].ToString()
@@ -395,12 +395,7 @@ namespace Autodesk.Cad.Crushner.Settings
             double[] ptStart = new double[(int)COORD3d.COUNT]
                 , ptEnd = new double[(int)COORD3d.COUNT];
             string nameEntityRelative = string.Empty;
-            MSExcel.POINT3D placementEnd;
 
-            string name = string.Empty;
-            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
-
-            if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
             // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
@@ -456,12 +451,7 @@ namespace Autodesk.Cad.Crushner.Settings
             double[] ptStart = new double[(int)COORD3d.COUNT]
                 , ptEnd = new double[(int)COORD3d.COUNT];
             string nameEntityRelative = string.Empty;
-            MSExcel.POINT3D placementEnd;
 
-            string name = string.Empty;
-            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
-
-            if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
             // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:
@@ -517,12 +507,7 @@ namespace Autodesk.Cad.Crushner.Settings
             double[] ptStart = new double[(int)COORD3d.COUNT]
                 , ptEnd = new double[(int)COORD3d.COUNT];
             string nameEntityRelative = string.Empty;
-            MSExcel.POINT3D placementEnd;
 
-            string name = string.Empty;
-            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
-
-            if (TryParseCommandAndNameEntity(format, rEntity, out name, out command) == true)
             // значения для параметров примитива
                 switch (format) {
                     case MSExcel.FORMAT.HEAP:

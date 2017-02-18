@@ -282,7 +282,7 @@ namespace Autodesk.Cad.Crushner.Assignment
 
             rowRes = new Settings.EntityParser.ProxyEntity (new object[] {
                 string.Format(@"{0}", pair.Key.Name) //NAME
-                , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
+                , string.Format(@"{0}", pair.Key.Command.ToString()) //!!! COMMAND_ENTITY
                 , string.Format(@"{0:0.0}", height) //CONE_HEIGHT
                 , string.Format(@"{0:0.0}", rAlongX) //CONE_ARADIUS_X
                 , string.Format(@"{0:0.0}", rAlongY) //CONE_ARADIUS_X
@@ -327,7 +327,7 @@ namespace Autodesk.Cad.Crushner.Assignment
 
             rowRes = new Settings.EntityParser.ProxyEntity(new object[] {
                 string.Format(@"{0}", pair.Key.Name) //NAME
-                , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
+                , string.Format(@"{0}", pair.Key.Command.ToString()) //!!! COMMAND_ENTITY
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Circle).Center.X) //CENTER.X
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Circle).Center.Y) //CENTER.Y
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Circle).Center.Z) //CENTER.Z
@@ -345,7 +345,7 @@ namespace Autodesk.Cad.Crushner.Assignment
 
             rowRes = new Settings.EntityParser.ProxyEntity (new object[] {
                 string.Format(@"{0}", pair.Key.Name) //NAME
-                , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
+                , string.Format(@"{0}", pair.Key.Command.ToString()) //!!! COMMAND_ENTITY
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Arc).Center.X) //CENTER.X
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Arc).Center.Y) //CENTER.Y
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Arc).Center.Z) //CENTER.Z

@@ -310,8 +310,9 @@ namespace Autodesk.Cad.Crushner.Settings
                                         if (!(pEntity == null))
                                             s_dictBlock.AddEntity(
                                                 ews.Name
-                                                , nameEntity
+                                                , commandEntity
                                                 , pEntity.GetValueOrDefault()
+                                                , nameEntity
                                             );
                                         else
                                             Logging.DebugCaller(MethodBase.GetCurrentMethod(), string.Format(@"Элемент с именем {0} пропущен..."

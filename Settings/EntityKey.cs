@@ -14,59 +14,82 @@ namespace Autodesk.Cad.Crushner.Settings
         /// <summary>
         /// Часть команды для создания сущности
         /// </summary>
-        public Settings.MSExcel.COMMAND_ENTITY m_command;
+        private Settings.MSExcel.COMMAND_ENTITY _command;
+
+        public Settings.MSExcel.COMMAND_ENTITY Command { get { return _command; } }
         /// <summary>
         /// Индекс сущности - номер в наименовании, уникальный в пределах блока
         /// </summary>
-        public int m_index;
+        private int _index;
         /// <summary>
         /// Уникальное наименование со специальной сигнатурой (состоит из 2-х частей)
         ///  1 - COMMAND_ENTITY
         ///  2 - 3-х значный цифровой индекс
         /// </summary>
-        public string Name {
+        public string Id {
             get {
                 if (!(Valid < 0))
                     if (Valid == 0)
-                        return string.Format(@"{0}{2}{1:000}", m_command.ToString(), m_index, s_chNameDelimeter);
+                        return string.Format(@"{0}{2}{1:000}", _command.ToString(), _index, s_chNameDelimeter);
                     else
-                        return string.Format(@"{0}", m_command.ToString());
+                        return string.Format(@"{0}", _command.ToString());
                 else
                     return string.Empty;
             }
         }
 
+        public string Name { get { return _name; } }
+
         public int Valid;
-        /// <summary>
-        /// Наименование блока, к которому принадлежит сущность
-        /// </summary>
-        public string m_BlockName;
+        ///// <summary>
+        ///// Наименование блока, к которому принадлежит сущность
+        ///// </summary>
+        //public string m_BlockName;
+
+        private string _name;
         /// <summary>
         /// Конструктор - основной (с параметрами)
         /// </summary>
         /// <param name="blockName">Наименование блока-владельца</param>
         /// <param name="nameEntity">Наименование сущности</param>
-        public KEY_ENTITY(string blockName, string nameEntity)
+        public KEY_ENTITY(/*string blockName, */MSExcel.COMMAND_ENTITY command, int indx, string nameEntity)
         {
-            MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
-            string[] names = nameEntity.Split(s_chNameDelimeter);
+            //MSExcel.COMMAND_ENTITY command = MSExcel.COMMAND_ENTITY.UNKNOWN;
+            //string[] names = nameEntity.Split(s_chNameDelimeter);
 
-            m_BlockName = string.Empty;
+            //m_BlockName = string.Empty;
 
-            if (names.Length == 2)
-                if (Enum.TryParse(names[0], out command) == true) {
-                    if (Int32.TryParse(names[1], out m_index) == true) {
-                        m_command = command;
+            //// вариант №1
+            //if (names.Length == 2)
+            //    if (Enum.TryParse(names[0], out command) == true) {
+            //        if (Int32.TryParse(names[1], out _index) == true) {
+            //            _command = command;
 
-                        Valid = 0;
-                    } else
-                        Valid = 1;
+            //            Valid = 0;
+            //        } else
+            //            Valid = 1;
 
-                    m_BlockName = blockName;
+            //        m_BlockName = blockName;
+            //    } else
+            //        Valid = -1;
+            //else
+            //    Valid = -2;
+
+            // вариант №2
+            if (!(command == MSExcel.COMMAND_ENTITY.UNKNOWN)) {
+                _command = command;
+                _name = nameEntity;
+
+                if (indx > 0) {
+                    _index = indx;
+
+                    //m_BlockName = blockName;
+
+                    Valid = 0;
                 } else
-                    Valid = -1;
-            else
-                Valid = -2;
+                    Valid = 1;
+            } else
+                Valid = -1;
         }
         /// <summary>
         /// Конструктор - основной (с парметрами)
@@ -77,13 +100,8 @@ namespace Autodesk.Cad.Crushner.Settings
         /// <param name="command">Часть команды для создания сущности</param>
         /// <param name="blockName">Наименование блока-владельца</param>
         /// <param name="indx">Индекс сущности - номер в наименовании, уникальный в пределах блока</param>
-        public KEY_ENTITY(Settings.MSExcel.COMMAND_ENTITY command, string blockName, int indx)
+        public KEY_ENTITY(/*string blockName, */Settings.MSExcel.COMMAND_ENTITY command, int indx) : this (command, indx, string.Empty)
         {
-            m_command = command;
-
-            m_index = indx;
-
-            m_BlockName = blockName;
         }
         /// <summary>
         /// Оператор срвнения
@@ -93,8 +111,8 @@ namespace Autodesk.Cad.Crushner.Settings
         /// <returns>Результат сравнения</returns>
         public static bool operator==(KEY_ENTITY o1, KEY_ENTITY o2)
         {
-            return (o1.m_command.Equals(o2.m_command) == true)
-                && (o1.m_index.Equals(o2.m_index) == true);
+            return (o1._command == o2._command)
+                && (o1._index == o2._index);
         }
         /// <summary>
         /// Оператор срвнения
@@ -104,8 +122,8 @@ namespace Autodesk.Cad.Crushner.Settings
         /// <returns>Результат сравнения</returns>
         public static bool operator !=(KEY_ENTITY o1, KEY_ENTITY o2)
         {
-            return (o1.m_command.Equals(o2.m_command) == false)
-                || (o1.m_index.Equals(o2.m_index) == false);
+            return (!(o1._command == o2._command))
+                || (!(o1._index == o2._index));
         }
         /// <summary>
         /// Метод для сравнения текущего объекта с объектом, указанным в аргументе

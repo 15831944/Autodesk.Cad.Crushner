@@ -96,11 +96,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="settings.xls">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{f841f198-18f7-4e42-aafc-300f28e50f6b}</Project>
       <Name>Core</Name>

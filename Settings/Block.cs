@@ -68,6 +68,15 @@ namespace Autodesk.Cad.Crushner.Settings
             {
                 m_dictEntityParser.Add(key, entity);
             }
+
+            public int GetCount(COMMAND_ENTITY command)
+            {
+                int iRes = 0;
+
+                iRes = m_dictEntityParser.Keys.Where(item => (item.Command == command)).Count();
+
+                return iRes;
+            }
         }
 
         public class DictionaryBlock : Dictionary<string, BLOCK>
@@ -112,14 +121,14 @@ namespace Autodesk.Cad.Crushner.Settings
                     ; // ошибка добавления ссылки на блок
             }
 
-            public void AddEntity(string blockName, string name, EntityParser.ProxyEntity pEntity)
+            public void AddEntity(string blockName, MSExcel.COMMAND_ENTITY command, EntityParser.ProxyEntity pEntity, string name)
             {
                 if (this.ContainsKey(blockName) == false)
                     this.Add(blockName, new BLOCK());
                 else
                     ;
 
-                this[blockName].Add(new KEY_ENTITY(blockName, name), pEntity);
+                this[blockName].Add(new KEY_ENTITY(/*blockName,*/command, this[blockName].GetCount(command) + 1, name), pEntity);
             }
         }
     }

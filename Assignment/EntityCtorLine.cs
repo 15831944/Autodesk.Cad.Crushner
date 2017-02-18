@@ -193,7 +193,7 @@ namespace Autodesk.Cad.Crushner.Assignment
 
             rowRes = new Settings.EntityParser.ProxyEntity(new object[] {
                 string.Format(@"{0}", pair.Key.Name) //NAME
-                , string.Format(@"{0}", pair.Key.m_command.ToString()) //!!! COMMAND_ENTITY
+                , string.Format(@"{0}", pair.Key.Command.ToString()) //!!! COMMAND_ENTITY
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.X) //SATRT.X
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.Y) //START.Y
                 , string.Format(@"{0:0.0}", (pair.Value.m_entity as Line).StartPoint.Z) //START.Z

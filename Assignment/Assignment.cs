@@ -465,7 +465,7 @@ namespace Autodesk.Cad.Crushner.Assignment
                         btrCurrent = trCurrent.GetObject(dbCurrent.CurrentSpaceId
                             , OpenMode.ForWrite) as BlockTableRecord;
 
-                    foreach (KEY_ENTITY key in MSExcel.GetBlock(blockName).m_dictEntityCtor.Keys) {
+                    foreach (KEY_ENTITY key in MSExcel.GetBlock(blockName).Keys) {
                         if (MSExcel.GetEntityCtor(blockName, key).m_entity.Id.IsValid == false) {
                             oidEntity = btrCurrent.AppendEntity(MSExcel.GetEntityCtor(blockName, key).m_entity);
                             trCurrent.AddNewlyCreatedDBObject(MSExcel.GetEntityCtor(blockName, key).m_entity as DBObject, true);
@@ -506,8 +506,9 @@ namespace Autodesk.Cad.Crushner.Assignment
             // для трансформации в исходное положение и извлесения значений параметров при создании примитива
             //Entity entityTransformCopy;
 
-            string message = string.Format(@"Добавление примитива {0}, имя={1}..."
+            string message = string.Format(@"Добавление примитива {0}, ИД={1}, имя={2}..."
                 , MSExcel.GetEntityCtor(blockName, key).GetType().Name
+                , key.Id
                 , key.Name);
 
             try {

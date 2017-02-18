@@ -24,13 +24,13 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// </summary>
         /// <param name="blockName">Наименование блока-владельца</param>
         /// <param name="name">Наименование сущности</param>
-        public KEY_ENTITY(string blockName, string name)
-            : base (blockName, name)
+        public KEY_ENTITY(/*string blockName, */Settings.MSExcel.COMMAND_ENTITY command, int indx, string name)
+            : base (/*blockName, */command, indx, name)
         {
             if (!(Valid < 0)) {
-                m_type = MSExcel.GetTypeEntity(m_command);
-                m_nameCreateMethod = MSExcel.GetNameCreateMethodEntity(m_command);
-                m_nameSolidType = MSExcel.GetNameSolidTypeEntity(m_command);
+                m_type = MSExcel.GetTypeEntity(command);
+                m_nameCreateMethod = MSExcel.GetNameCreateMethodEntity(command);
+                m_nameSolidType = MSExcel.GetNameSolidTypeEntity(command);
             } else {
                 m_type = Type.Missing as Type;
                 m_nameCreateMethod =
@@ -47,8 +47,8 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <param name="command">Часть команды для создания сущности</param>
         /// <param name="blockName">Наименование блока-владельца</param>
         /// <param name="indx">Индекс сущности - номер в наименовании, уникальный в пределах блока</param>
-        public KEY_ENTITY(Settings.MSExcel.COMMAND_ENTITY command, Type type, string nameSolidType, string nameCreateMethod, string blockName, int indx)
-            : base (command, blockName, indx)
+        public KEY_ENTITY(string blockName, Settings.MSExcel.COMMAND_ENTITY command, int indx, Type type, string nameSolidType, string nameCreateMethod)
+            : base (/*blockName, */command, indx)
         {
             m_type = type;
 
@@ -58,7 +58,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         }
 
         public KEY_ENTITY(MSExcel.MAP_KEY_ENTITY mapKeyEntity, string blockName, int indx)
-            : this(mapKeyEntity.m_command, mapKeyEntity.m_type, mapKeyEntity.m_nameSolidType, mapKeyEntity.m_nameCreateMethod, blockName, indx)
+            : this(blockName, mapKeyEntity.m_command, indx, mapKeyEntity.m_type, mapKeyEntity.m_nameSolidType, mapKeyEntity.m_nameCreateMethod)
         {
         }
         /// <summary>
@@ -69,8 +69,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <returns>Результат сравнения</returns>
         public static bool operator==(KEY_ENTITY o1, KEY_ENTITY o2)
         {
-            return (o1.m_command.Equals(o2.m_command) == true)
-                && (o1.m_index.Equals(o2.m_index) == true)
+            return (((Settings.KEY_ENTITY)o1 == (Settings.KEY_ENTITY)o2) == true)
                 && (o1.m_type.Equals(o2.m_type) == true);
         }
         /// <summary>
@@ -81,8 +80,7 @@ namespace Autodesk.Cad.Crushner.Assignment
         /// <returns>Результат сравнения</returns>
         public static bool operator !=(KEY_ENTITY o1, KEY_ENTITY o2)
         {
-            return (o1.m_command.Equals(o2.m_command) == false)
-                || (o1.m_index.Equals(o2.m_index) == false)
+            return (((Settings.KEY_ENTITY)o1 == (Settings.KEY_ENTITY)o2) == false)
                 || (o1.m_type.Equals(o2.m_type) == false);
         }
         /// <summary>

@@ -173,7 +173,7 @@ namespace Autodesk.Cad.Crushner.Assignment
 
         public static EntityCtor.ProxyEntity GetEntityCtor(string blockName, KEY_ENTITY key)
         {
-            return GetBlock(blockName).m_dictEntityCtor[key];
+            return GetBlock(blockName).GetItem(key);
         }
 
         public static BLOCK GetBlock(string blockName)

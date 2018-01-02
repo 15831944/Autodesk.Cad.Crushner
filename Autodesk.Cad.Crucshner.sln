@@ -1,0 +1,88 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "acad", "C:\Program Files\Autodesk\AutoCAD 2013\acad.exe", "{46CBE164-31BA-4ECA-A1D2-28997DACBC84}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = C:\Program Files\Autodesk\AutoCAD 2013\acad.exe
+		RemoteMachine = HELL
+		StartingDirectory = C:\Program Files\Autodesk\AutoCAD 2013
+		Arguments = /nologo /b "D:\MyProject's\C.Net\Autodesk.Crushner\netload-auto.scr"
+		Environment = По умолчанию
+		LaunchingEngine = fb0d4648-f776-4980-95f8-bb7f36ebc1ee
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A4CF9B90-7917-4201-B629-03006B98BB5D}"
+	ProjectSection(SolutionItems) = preProject
+		go.cmd = go.cmd
+		netload-auto.scr = netload-auto.scr
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{3D234295-8573-4B85-820E-034DA7510CF9}"
+	ProjectSection(SolutionItems) = preProject
+		Document\Instruction-1.0.1.1.docx = Document\Instruction-1.0.1.1.docx
+		Document\Instruction-2016-01-14.docx = Document\Instruction-2016-01-14.docx
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dawager", "Dawager\Dawager.csproj", "{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "Settings\Settings.csproj", "{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment", "Assignment\Assignment.csproj", "{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{F841F198-18F7-4E42-AAFC-300F28E50F6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46CBE164-31BA-4ECA-A1D2-28997DACBC84}.Debug|Any CPU.ActiveCfg = Release|x64
+		{46CBE164-31BA-4ECA-A1D2-28997DACBC84}.Debug|x64.ActiveCfg = Release|x64
+		{46CBE164-31BA-4ECA-A1D2-28997DACBC84}.Release|Any CPU.ActiveCfg = Release|x64
+		{46CBE164-31BA-4ECA-A1D2-28997DACBC84}.Release|x64.ActiveCfg = Release|x64
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{3A3FA1F7-4942-4398-BB4B-F8A66FA4F0F3}.Release|x64.Build.0 = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Debug|x64.Build.0 = Debug|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|x64.ActiveCfg = Release|Any CPU
+		{94B4BC26-ADB0-4B37-A5CA-0D3F56823356}.Release|x64.Build.0 = Release|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Debug|x64.Build.0 = Debug|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|x64.ActiveCfg = Release|Any CPU
+		{9CFB137B-0EE5-4A64-A125-0EF8CA2A7232}.Release|x64.Build.0 = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Debug|x64.Build.0 = Debug|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|x64.ActiveCfg = Release|Any CPU
+		{F841F198-18F7-4E42-AAFC-300F28E50F6B}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
